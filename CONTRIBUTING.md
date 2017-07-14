@@ -1,27 +1,9 @@
-# TLS Exported Authenticator
-
-This is the working area for the Individual internet-draft, "Post-Handshake Authentication in TLS".
-
-* [Editor's copy](https://grittygrease.github.io/tls-exported-authenticator/)
-
-## Building the Draft
-
-Formatted text and HTML versions of the draft can be built using `make`.
-
-```sh
-$ make
-```
-
-This requires that you have the necessary software installed.  See [the
-instructions](https://github.com/martinthomson/i-d-template/blob/master/doc/SETUP.md).
-
-
-## Contributing
+# Contributing
 
 Before submitting feedback, please familiarize yourself with our current issues
 list and review the [working group
-documents](https://datatracker.ietf.org/wg/tls/documents/) and [mailing
-list discussion](https://mailarchive.ietf.org/arch/browse/tls/). If you're
+documents](https://datatracker.ietf.org/wg/http2/documents/) and [mailing
+list discussion](https://mailarchive.ietf.org/arch/browse/http2/). If you're
 new to this, you may also want to read the [Tao of the
 IETF](https://www.ietf.org/tao.html).
 
