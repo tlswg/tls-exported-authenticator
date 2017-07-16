@@ -184,7 +184,7 @@ Given an established connection, the application SHOULD be able to call an
 to perform private key operation)
  * signature scheme
 
-The API returns the exported authentiator as output.
+The API returns the exported authenticator as output.
 
 Given an established connection and an exported authenticator message, the
 application SHOULD be able to call a "validate" API that takes an exported
