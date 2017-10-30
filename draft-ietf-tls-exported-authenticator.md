@@ -74,6 +74,13 @@ like HTTP/2.  It is also only available for client authentication.  This
 mechanism is intended to be used as part of a replacement for post-handshake
 authentication in applications.
 
+# Conventions and Terminology
+
+The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
+"SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and
+"OPTIONAL" in this document are to be interpreted as described in RFC
+2119 {{!RFC2119}}.
+
 # Authenticator
 
 The authenticator is a structured message that can be exported from either
@@ -199,6 +206,10 @@ In order for the application layer to be able to choose the certificates
 and signature schemes to use when constructing an authenticator, a TLS server
 SHOULD expose an API that returns the content of the signature_algorithms
 extension of client's ClientHello message.
+
+# IANA Considerations
+
+This document has no IANA actions.
 
 # Security Considerations {#security}
 
