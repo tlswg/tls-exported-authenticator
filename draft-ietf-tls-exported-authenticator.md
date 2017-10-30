@@ -100,7 +100,7 @@ sender:
   server respectively.
 
 * The Finished MAC Key is an exporter value derived using the label
-  "EXPORTER-server authenticator finished key" or "EXPORTER-client authenticator
+  "EXPORTER-client authenticator finished key" or "EXPORTER-server authenticator
   finished key" for authenticators sent by the client and server respectively.
 
 The context_value used for the exporter is absent (length zero) for all four
@@ -145,11 +145,12 @@ in the signature_algorithms extension of the ClientHello.  The signature is comp
 * The context string "Exported Authenticator" (which is not NULL-terminated)
 * A single 0 byte which serves as the separator
 * The value
-Hash(Handshake Context || Certificate)
+Hash(Handshake Context || Certificate) where Hash is the hash function for the handshake.
 
 Finished
 : A HMAC over the value
-Hash(Handshake Context || Certificate || CertificateVerify)
+Hash(Handshake Context || Certificate || CertificateVerify) where Hash
+is the hash function for the handshake, and the HMAC is computed
 using the hash function from the handshake and the Finished MAC Key as a key.
 {:br}
 
