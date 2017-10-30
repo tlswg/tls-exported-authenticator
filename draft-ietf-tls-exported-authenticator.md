@@ -216,6 +216,10 @@ individually authoritative over each.
 computed.  Any feedback about the time of creation or validation of the authenticator
 should be tracked as part of the application layer semantics if required.
 
+The signatures generated with this API cover the context string
+"Exported Authenticator" and therefore cannot be transplanted into other
+protocols.
+
 # Acknowledgements {#ack}
 
 Comments on this proposal were provided by Martin Thomson.  Suggestions for
