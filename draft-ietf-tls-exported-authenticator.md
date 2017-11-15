@@ -219,10 +219,9 @@ are not supported.  The "server_name" {{!RFC6066}}, "certificate_authorities"
 certificate selection, with the extensions provided in the authenticator request
 taking precedence over the extensions provided in the connection handshake.
 
-An extension MUST only be present in a Certificate message if the
-extension is present in the authenticator request if present.  If the authenticator
-request is not present, the extension MUST have been present in the ClientHello
-presented in the initial handshake.
+If an authenticator request was provided, the Certificate message MUST contain
+only extensions present in the authenticator request. Otherwise, the Certificate
+message MUST contain only extensions present in the ClientHello.
 
 The authenticator message is the concatenation of messages:
 Certificate || CertificateVerify || Finished
@@ -234,7 +233,7 @@ Finished message to see if it matches.
 # API considerations
 
 The creation and validation of both authenticator requests and
-authenticators SHOULD be implemented inside
+authenticators SHOULD be implemented inside the
 TLS library even if it is possible to implement it at the application layer.
 TLS implementations supporting the use of exported authenticators MUST provide
 application programming interfaces by which clients and servers may request
@@ -258,7 +257,7 @@ It returns the certificate_request_context.
 
 "authenticate", which takes as input:
 
- * a set of certificate chains for the connection and associated extensions
+ * a set of certificate chains and associated extensions
 (OCSP, SCT, etc.)
  * a signer (either the private key associated with the certificate, or interface
 to perform private key operation) for each chain
