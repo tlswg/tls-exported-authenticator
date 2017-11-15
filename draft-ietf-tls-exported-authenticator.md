@@ -81,6 +81,42 @@ The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
 "OPTIONAL" in this document are to be interpreted as described in RFC
 2119 {{!RFC2119}}.
 
+# Authenticator Request
+
+The authenticator request is a structured message that can be exported from either
+party of a TLS connection.  It can be transmitted to the other party of
+the TLS connection at the application layer.  The application layer protocol
+used to send the authenticator SHOULD use TLS as its underlying transport.
+
+An authenticator request message can be constructed by either the client or the
+server.  This authenticator uses the CertificateRequest message structure
+from Section 4.3.2 of {{!TLS13=I-D.ietf-tls-tls13}}.  This message is not
+encrypted with a handshake key, which differs from how this message is used
+in TLS 1.3.
+
+CertificateRequest
+: This message is used to define the parameters in a request for an authenticator.
+
+       struct {
+          opaque certificate_request_context<0..2^8-1>;
+          Extension extensions<2..2^16-1>;
+       } CertificateRequest;
+
+certificate_request_context
+: An opaque string which identifies the certificate request and which will
+be echoed in the authenticator message.  The certificate_request_context
+MUST be unique within the scope of this connection (thus preventing replay
+of authenticators). The certificate_request_context SHOULD be chosen to
+be unpredictable to the peer (e.g., by randomly generating it) in order
+to prevent an attacker who has temporary access to the peer's private
+key from pre-computing valid authenticators.
+
+extensions
+: The extensions that are allowed in this structure include the extensions
+defined for CertificateRequest messages defined in Section 4.2. of {{!TLS13=I-D.ietf-tls-tls13}}
+and the server_name {{!RFC6066}} extension, which is allowed for
+client-generated authenticator requests.
+
 # Authenticator
 
 The authenticator is a structured message that can be exported from either
@@ -89,11 +125,13 @@ the TLS connection at the application layer.  The application layer protocol
 used to send the authenticator SHOULD use TLS as its underlying transport.
 
 An authenticator message can be constructed by either the client or the
-server given an established TLS connection, a certificate, and a corresponding private
-key.  This authenticator uses the message structures from Section 4.4 of
-{{!TLS13=I-D.ietf-tls-tls13}}, but different parameters.  Also, unlike the Certificate and
-CertificateRequest messages in TLS 1.3, the messages described in this draft
-are not encrypted with a handshake key.
+server given an established TLS connection, a certificate, and a corresponding
+private key.  For clients, an authenticator request is required; for servers
+an authenticator request is optional.  The authenticator uses the message
+structures from Section 4.4 of {{!TLS13=I-D.ietf-tls-tls13}}, but different
+parameters.  Unlike the Certificate and CertificateVerify
+messages in TLS 1.3, the messages described in this document are not encrypted
+with a handshake key.
 
 Each authenticator is computed using a Handshake Context and Finished MAC Key
 derived from the TLS session.  These values are derived using an exporter as
@@ -125,13 +163,8 @@ supporting certificates in the chain. This structure is defined in {{!TLS13}},
 Section 4.4.2.
 
 The certificate message contains an opaque string called
-certificate_request_context.  The format of certificate_request_context is defined by
-the application layer protocol and its value can be used to differentiate exported
-authenticators.  For example, the application may use a sequence number used by the higher-level
-protocol during the transport of the authenticator to the other party.  Using
-a unique and unpredictable value ties the authenticator to a given context,
-allowing the application to prevent authenticators from being replayed or precomputed by
-an attacker with temporary access to a private key.
+certificate_request_context, which is extracted from the authenticator request if
+present.  If no authenticator request is provided, it is zero-length.
 
 CertificateVerify
 : This message is used to provide explicit proof that an endpoint possesses the private key corresponding to its certificate.
@@ -142,70 +175,104 @@ CertificateVerify
        } CertificateVerify;
 
 The algorithm field specifies the signature algorithm used (see Section 4.2.3 of {{!TLS13}}
-for the definition of this field). The signature is a digital signature using that algorithm.
-The signature scheme MUST be a valid signature scheme for TLS 1.3.  This excludes all RSASSA-PKCS1-v1_5
-algorithms and ECDSA algorithms that are not supported in TLS 1.3.  For servers,
-this signature scheme must match one of the signature and hash algorithms advertised
-in the signature_algorithms extension of the ClientHello.  The signature is computed using the over the concatenation of:
+for the definition of this field).  The signature is a digital signature
+using that algorithm.  The signature scheme MUST be a valid signature
+scheme for TLS 1.3.  This excludes all RSASSA-PKCS1-v1_5 algorithms and
+ECDSA algorithms that are not supported in TLS 1.3.  If an authenticator
+request is present, the signature algorithm MUST be chosen from one of
+the signature schemes in the authenticator request.  Otherwise, the signature
+algorithm used should be chosen from the "signature_algorithms" extension
+of the ClientHello used in the connection handshake.
+
+The signature is computed using the over the concatenation of:
 
 * A string that consists of octet 32 (0x20) repeated 64 times
 * The context string "Exported Authenticator" (which is not NULL-terminated)
 * A single 0 byte which serves as the separator
-* The value
-Hash(Handshake Context || Certificate) where Hash is the hash function for the handshake.
+* If the authenticator request is present, the value
+Hash(Handshake Context || authenticator request || Certificate)
+* If an authenticator request is not present, the value
+Hash(Handshake Context || Certificate)
+where
+Hash is the hash function for the handshake.
 
 Finished
 : A HMAC over the value
-Hash(Handshake Context || Certificate || CertificateVerify) where Hash
-is the hash function for the handshake, and the HMAC is computed
-using the hash function from the handshake and the Finished MAC Key as a key.
+Hash(Handshake Context || Certificate || CertificateVerify) if an authenticator
+is present, or Hash(Handshake Context || authenticator request ||
+Certificate || CertificateVerify) where Hash is the hash function for
+the handshake, and the HMAC is computed using the hash function from
+the handshake and the Finished MAC Key as a key.
 {:br}
 
-The certificates used in the Certificate message MUST conform to the requirements
-of a Certificate message in the version of TLS negotiated.  This is
-described in Section 4.2.3 of {{!TLS13}} and
-Sections 7.4.2 and 7.4.6 of {{!RFC5246}}.  Alternative certificate formats such as
-{{!RFC7250}} Raw Public Keys are not supported.
+The certificates chosen in the Certificate message MUST conform to the requirements
+of a Certificate message in the version of TLS negotiated.  If an authenticator
+request is present, the signature algorithms used to choose the algorithm are taken
+from the "signature_algorithms" in the from the authenticator.  If there is
+no authenticator request, the signature algorithms are chosen from the "signature_algorithms"
+extension from the ClientHello used in the connection.  This is described in
+Section 4.2.3 of {{!TLS13}} and Sections 7.4.2 and 7.4.6 of {{!RFC5246}}.
+Alternative certificate formats such as {{!RFC7250}} Raw Public Keys
+are not supported.  The "server_name" {{!RFC6066}}, "certificate_authorities"
+(Section 4.2.4. of {{!TLS13=I-D.ietf-tls-tls13}}), or "oid_filters"
+(Section 4.2.5. of {{!TLS13=I-D.ietf-tls-tls13}}) extensions are used to guide
+certificate selection, with the extensions provided in the authenticator request
+taking precedence over the extensions provided in the connection handshake.
 
-The exported authenticator message is the concatenation of messages:
+An extension MUST only be present in a Certificate message if the
+extension is present in the authenticator request if present.  If the authenticator
+request is not present, the extension MUST have been present in the ClientHello
+presented in the initial handshake.
+
+The authenticator message is the concatenation of messages:
 Certificate || CertificateVerify || Finished
 
-A given exported authenticator can be validated by checking the validity of the
-CertificateVerify message and recomputing the Finished message to see if it
-matches.
+A given authenticator can be validated by checking the validity of the
+CertificateVerify message given the authenticator request (if used) and recomputing the
+Finished message to see if it matches.
 
 # API considerations
 
-The creation and validation of exported authenticators SHOULD be implemented inside
+The creation and validation of both authenticator requests and
+authenticators SHOULD be implemented inside
 TLS library even if it is possible to implement it at the application layer.
 TLS implementations supporting the use of exported authenticators MUST provide
 application programming interfaces by which clients and servers may request
 and verify exported authenticator messages.
 
-Given an established connection, the application SHOULD be able to call an
-"authenticate" API which takes as input:
+Given an established connection, the application SHOULD be able to call the
+following APIs:
 
- * certificate_request_context (from 0 to 255 bytes)
- * valid certificate chain for the connection and associated extensions
+"request", which takes as input:
+
+* certificate_request_context (from 0 to 255 bytes)
+* set of extensions to include
+
+It returns an authenticator request.
+
+"get context", which takes as input
+
+* authenticator request
+
+It returns the certificate_request_context.
+
+"authenticate", which takes as input:
+
+ * a set of certificate chains for the connection and associated extensions
 (OCSP, SCT, etc.)
- * signer (either the private key associated with the certificate, or interface
-to perform private key operation)
- * signature scheme
+ * a signer (either the private key associated with the certificate, or interface
+to perform private key operation) for each chain
+ * an optional authenticator request
 
-The API returns the exported authenticator as output.
+It returns the exported authenticator as output.  The logic for selecting the
+certificates and extensions to include in the exporter SHOULD be implemented
+in the TLS library.
 
-Given an established connection and an exported authenticator message, the
-application SHOULD be able to call a "validate" API that takes an exported
-authenticator as an input. If the Finished and CertificateVerify messages
-verify correctly, the API returns the following as output:
+"validate", which takes as input:
+ * an optional authenticator request
+ * an authenticator
 
- * certificate chain and extensions
- * certificate_request_context
-
-In order for the application layer to be able to choose the certificates
-and signature schemes to use when constructing an authenticator, a TLS server
-SHOULD expose an API that returns the content of the signature_algorithms
-extension of client's ClientHello message.
+It returns the certificate chain and extensions.
 
 # IANA Considerations
 
