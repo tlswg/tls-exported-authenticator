@@ -189,12 +189,11 @@ The signature is computed using the over the concatenation of:
 * A string that consists of octet 32 (0x20) repeated 64 times
 * The context string "Exported Authenticator" (which is not NULL-terminated)
 * A single 0 byte which serves as the separator
-* If the authenticator request is present, the value
-Hash(Handshake Context || authenticator request || Certificate)
-* If an authenticator request is not present, the value
-Hash(Handshake Context || Certificate)
-where
-Hash is the hash function for the handshake.
+* If the authenticator request is present, the value `Hash(Handshake Context || authenticator request || Certificate)`
+
+* If an authenticator request is not present, the value `Hash(Handshake Context || Certificate)`
+
+where Hash is the hash function for the handshake.
 
 Finished
 : A HMAC over the value
@@ -245,13 +244,13 @@ following APIs:
 "request", which takes as input:
 
 * certificate_request_context (from 0 to 255 bytes)
-* set of extensions to include
+* set of extensions to include (this MUST include signature_algorithms)
 
-It returns an authenticator request.
+It returns an authenticator request, which is a sequence of octets that includes a CertificateRequest message.
 
 "get context", which takes as input
 
-* authenticator request
+* authenticator
 
 It returns the certificate_request_context.
 
@@ -263,9 +262,16 @@ It returns the certificate_request_context.
 to perform private key operation) for each chain
  * an optional authenticator request
 
-It returns the exported authenticator as output.  The logic for selecting the
-certificates and extensions to include in the exporter SHOULD be implemented
-in the TLS library.
+It returns the exported authenticator as output.  It is RECOMMENDED that
+the logic for selecting the certificates and extensions to include
+in the exporter is implemented in the TLS library.  Implementing this
+in the TLS library lets the implementer take advantage of existing
+extension and certificate selection logic.
+
+It is also possible to implement this API outside of the TLS library using
+TLS exporters.  This may be preferable in cases where the application
+does not have access to a TLS library with these APIs or when TLS is
+handled independently of the application layer protocol.
 
 "validate", which takes as input:
  * an optional authenticator request
