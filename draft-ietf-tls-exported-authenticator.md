@@ -86,7 +86,8 @@ The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
 The authenticator request is a structured message that can be exported from either
 party of a TLS connection.  It can be transmitted to the other party of
 the TLS connection at the application layer.  The application layer protocol
-used to send the authenticator SHOULD use TLS as its underlying transport.
+used to send the authenticator SHOULD use TLS as its underlying transport to
+keep the certificate confidential.
 
 An authenticator request message can be constructed by either the client or the
 server.  This authenticator uses the CertificateRequest message structure
