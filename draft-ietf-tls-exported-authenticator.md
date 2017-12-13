@@ -86,13 +86,14 @@ The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
 The authenticator request is a structured message that can be exported from either
 party of a TLS connection.  It can be transmitted to the other party of
 the TLS connection at the application layer.  The application layer protocol
-used to send the authenticator SHOULD use TLS as its underlying transport.
+used to send the authenticator SHOULD use TLS as its underlying transport to
+keep the request confidential.
 
 An authenticator request message can be constructed by either the client or the
-server.  This authenticator uses the CertificateRequest message structure
-from Section 4.3.2 of {{!TLS13=I-D.ietf-tls-tls13}}.  This message is not
-encrypted with a handshake key, which differs from how this message is used
-in TLS 1.3.
+server.  This authenticator request uses the CertificateRequest message structure
+from Section 4.3.2 of {{!TLS13=I-D.ietf-tls-tls13}}.  This message does not
+include the TLS record layer and is therefore not encrypted with a
+handshake key.
 
 CertificateRequest
 : This message is used to define the parameters in a request for an authenticator.
@@ -122,16 +123,16 @@ client-generated authenticator requests.
 The authenticator is a structured message that can be exported from either
 party of a TLS connection.  It can be transmitted to the other party of
 the TLS connection at the application layer.  The application layer protocol
-used to send the authenticator SHOULD use TLS as its underlying transport.
+used to send the authenticator SHOULD use TLS as its underlying transport
+to keep the certificate confidential.
 
 An authenticator message can be constructed by either the client or the
 server given an established TLS connection, a certificate, and a corresponding
 private key.  For clients, an authenticator request is required; for servers
 an authenticator request is optional.  The authenticator uses the message
 structures from Section 4.4 of {{!TLS13=I-D.ietf-tls-tls13}}, but different
-parameters.  Unlike the Certificate and CertificateVerify
-messages in TLS 1.3, the messages described in this document are not encrypted
-with a handshake key.
+parameters.  These messages do not include the TLS record layer and are
+therefore not encrypted with a handshake key.
 
 Each authenticator is computed using a Handshake Context and Finished MAC Key
 derived from the TLS session.  These values are derived using an exporter as
