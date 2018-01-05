@@ -2,7 +2,7 @@
 
 This is the working area for the Individual internet-draft, "Post-Handshake Authentication in TLS".
 
-* [Editor's copy](https://grittygrease.github.io/tls-exported-authenticator/)
+* [Editor's copy](https://tlswg.github.io/tls-exported-authenticator/)
 
 ## Building the Draft
 
