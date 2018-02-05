@@ -277,7 +277,7 @@ it at the application layer. TLS implementations supporting the use of exported
 authenticators MUST provide application programming interfaces by which clients
 and servers may request and verify exported authenticator messages.
 
-Notwithstanding the success cases described below, all APIs MUST fail if:
+Notwithstanding the success conditions described below, all APIs MUST fail if:
 
 * the connection uses a TLS version of 1.1 or earlier, or
 * the connection is TLS 1.2 and the extended master secret {{!RFC7627}} was not
