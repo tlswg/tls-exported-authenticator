@@ -135,6 +135,8 @@ structures from Section 4.4 of {{!TLS13=I-D.ietf-tls-tls13}}, but different
 parameters.  These messages do not include the TLS record layer and are
 therefore not encrypted with a handshake key.
 
+## Authenticator Keys
+
 Each authenticator is computed using a Handshake Context and Finished MAC Key
 derived from the TLS session.  These values are derived using an exporter as
 described in {{!RFC5705}} (for TLS 1.2) or {{!TLS13=I-D.ietf-tls-tls13}} (for
@@ -159,8 +161,14 @@ for this purpose or they cannot be used.
 If the connection is TLS 1.2, the master secret MUST have been computed
 with the extended master secret {{!RFC7627}} to avoid key synchronization attacks.
 
-Certificate
-: The certificate to be used for authentication and any
+## Authenticator Construction
+
+An authenticator is formed from the concatenation of TLS 1.3 {{!TLS13}}
+Certificate, CertificateVerify, and Finished messages.
+
+### Certificate
+
+The certificate to be used for authentication and any
 supporting certificates in the chain. This structure is defined in {{!TLS13}},
 Section 4.4.2.
 
@@ -168,8 +176,10 @@ The certificate message contains an opaque string called
 certificate_request_context, which is extracted from the authenticator request if
 present.  If no authenticator request is provided, it is zero-length.
 
-CertificateVerify
-: This message is used to provide explicit proof that an endpoint possesses the private key corresponding to its certificate.
+### CertificateVerify
+
+This message is used to provide explicit proof that an endpoint possesses the
+private key corresponding to its certificate.
 
        struct {
           SignatureScheme algorithm;
@@ -191,20 +201,19 @@ The signature is computed using the over the concatenation of:
 * A string that consists of octet 32 (0x20) repeated 64 times
 * The context string "Exported Authenticator" (which is not NULL-terminated)
 * A single 0 byte which serves as the separator
-* If the authenticator request is present, the value `Hash(Handshake Context || authenticator request || Certificate)`
+* If the authenticator request is present, the value `Hash(Handshake Context ||
+  authenticator request || Certificate)`
+* If an authenticator request is not present, the value `Hash(Handshake Context
+  || Certificate)` where Hash is the hash function for the handshake.
 
-* If an authenticator request is not present, the value `Hash(Handshake Context || Certificate)`
+### Finished
 
-where Hash is the hash function for the handshake.
-
-Finished
-: A HMAC over the value
+A HMAC over the value
 Hash(Handshake Context || Certificate || CertificateVerify) if an authenticator
 is present, or Hash(Handshake Context || authenticator request ||
 Certificate || CertificateVerify) where Hash is the hash function for
 the handshake, and the HMAC is computed using the hash function from
 the handshake and the Finished MAC Key as a key.
-{:br}
 
 The certificates chosen in the Certificate message MUST conform to the requirements
 of a Certificate message in the version of TLS negotiated.  If an authenticator
@@ -215,8 +224,8 @@ extension from the ClientHello used in the connection.  This is described in
 Section 4.2.3 of {{!TLS13}} and Sections 7.4.2 and 7.4.6 of {{!RFC5246}}.
 Alternative certificate formats such as {{!RFC7250}} Raw Public Keys
 are not supported.  The "server_name" {{!RFC6066}}, "certificate_authorities"
-(Section 4.2.4. of {{!TLS13=I-D.ietf-tls-tls13}}), or "oid_filters"
-(Section 4.2.5. of {{!TLS13=I-D.ietf-tls-tls13}}) extensions are used to guide
+(Section 4.2.4. of {{!TLS13}}), or "oid_filters"
+(Section 4.2.5. of {{!TLS13}}) extensions are used to guide
 certificate selection, with the extensions provided in the authenticator request
 taking precedence over the extensions provided in the connection handshake.
 
@@ -224,8 +233,13 @@ If an authenticator request was provided, the Certificate message MUST contain
 only extensions present in the authenticator request. Otherwise, the Certificate
 message MUST contain only extensions present in the ClientHello.
 
-The authenticator message is the concatenation of messages:
+### Authenticator Creation
+
+An endpoint constructs an authenticator by concatenating serializing the Certificate, CertificateVerify, and Finished as TLS handshake messages and concatenating the octets:
+
+```
 Certificate || CertificateVerify || Finished
+```
 
 A given authenticator can be validated by checking the validity of the
 CertificateVerify message given the authenticator request (if used) and recomputing the
@@ -245,23 +259,28 @@ Notwithstanding the success cases described below, all APIs MUST fail if:
 * the connection is TLS 1.2 and the extended master secret {{!RFC7627}} was not
   used
 
-Given an established connection, the application SHOULD be able to call the
-following APIs:
+The following sections describes APIs that are considered necessary to implement exported authenticators.  These are informative only.
 
-"request", which takes as input:
+## The "request" API
+
+The "request" API takes as input:
 
 * certificate_request_context (from 0 to 255 bytes)
 * set of extensions to include (this MUST include signature_algorithms)
 
 It returns an authenticator request, which is a sequence of octets that includes a CertificateRequest message.
 
-"get context", which takes as input
+## The "get context" API
+
+The "get context" API takes as input:
 
 * authenticator
 
 It returns the certificate_request_context.
 
-"authenticate", which takes as input:
+## The "authenticate" API
+
+The "authenticate" takes as input:
 
  * a set of certificate chains and associated extensions
 (OCSP, SCT, etc.)
@@ -269,7 +288,7 @@ It returns the certificate_request_context.
 to perform private key operation) for each chain
  * an optional authenticator request
 
-It returns the exported authenticator as output.  It is RECOMMENDED that
+It returns the exported authenticator as a sequence of octets.  It is RECOMMENDED that
 the logic for selecting the certificates and extensions to include
 in the exporter is implemented in the TLS library.  Implementing this
 in the TLS library lets the implementer take advantage of existing
@@ -280,7 +299,10 @@ TLS exporters.  This may be preferable in cases where the application
 does not have access to a TLS library with these APIs or when TLS is
 handled independently of the application layer protocol.
 
-"validate", which takes as input:
+## The "validate" API
+
+The "validate" API takes as input:
+
  * an optional authenticator request
  * an authenticator
 
