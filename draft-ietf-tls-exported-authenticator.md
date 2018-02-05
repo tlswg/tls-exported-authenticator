@@ -166,6 +166,13 @@ with the extended master secret {{!RFC7627}} to avoid key synchronization attack
 An authenticator is formed from the concatenation of TLS 1.3 {{!TLS13}}
 Certificate, CertificateVerify, and Finished messages.
 
+If an authenticator request is present, the extensions used to guide the
+construction of these messages are taken from the authenticator request. If
+there is no authenticator request, the extensions are chosen from the TLS
+handshake. That is, the extensions received in a ClientHello (for servers),
+ServerHello (for clients in TLS 1.2), or EncryptedExtensions (for clients in
+TLS 1.3).
+
 ### Certificate
 
 The certificate to be used for authentication and any
@@ -176,25 +183,24 @@ The certificate message contains an opaque string called
 certificate_request_context, which is extracted from the authenticator request if
 present.  If no authenticator request is provided, it is zero-length.
 
-The certificates chosen in the Certificate message MUST conform to the requirements
-of a Certificate message in the negotiated version of TLS.  If an authenticator
-request is present, the signature algorithms used to choose the algorithm are taken
-from the "signature_algorithms" in the from the authenticator.  If there is
-no authenticator request, the signature algorithms are chosen from the "signature_algorithms"
-extension from the extensions used in the TLS handshake.  This is described in
+The certificates chosen in the Certificate message MUST conform to the
+requirements of a Certificate message in the negotiated version of TLS. In
+particular, the certificate MUST be valid for the a signature algorithm
+indicated by the peer in a "signature_algorithms" extension, as described in
 Section 4.2.3 of {{!TLS13}} and Sections 7.4.2 and 7.4.6 of {{!RFC5246}}.
+
+In addition to "signature_algorithms", the "server_name" {{!RFC6066}},
+"certificate_authorities" (Section 4.2.4. of {{!TLS13}}), or "oid_filters"
+(Section 4.2.5. of {{!TLS13}}) extensions are used to guide certificate
+selection. These extensions are taken from the authenticator request if
+present, or the TLS handshake if not.
+
 Alternative certificate formats such as {{!RFC7250}} Raw Public Keys
-are not supported.  The "server_name" {{!RFC6066}}, "certificate_authorities"
-(Section 4.2.4. of {{!TLS13}}), or "oid_filters"
-(Section 4.2.5. of {{!TLS13}}) extensions are used to guide
-certificate selection, with the extensions provided in the authenticator request
-taking precedence over the extensions provided in the connection handshake.
+are not supported in this version of the specification.
 
 If an authenticator request was provided, the Certificate message MUST contain
 only extensions present in the authenticator request. Otherwise, the
-Certificate message MUST contain only extensions present in the ClientHello
-(for servers), ServerHello (for clients in TLS 1.2), or EncryptedExtensions
-(for clients in TLS 1.3).
+Certificate message MUST contain only extensions present in the TLS handshake.
 
 ### CertificateVerify
 
