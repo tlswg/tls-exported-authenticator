@@ -230,19 +230,32 @@ The signature is computed using the over the concatenation of:
 * A string that consists of octet 32 (0x20) repeated 64 times
 * The context string "Exported Authenticator" (which is not NULL-terminated)
 * A single 0 byte which serves as the separator
-* If the authenticator request is present, the value `Hash(Handshake Context ||
-  authenticator request || Certificate)`
-* If an authenticator request is not present, the value `Hash(Handshake Context
-  || Certificate)` where Hash is the hash function for the handshake.
+* The hashed authenticator transcript
+
+The authenticator transcript is the hash of the concatenated Handshake Context,
+authenticator request (if present), and Certificate message:
+
+```
+Hash(Handshake Context || authenticator request || Certificate)
+```
+
+Where Hash is the hash function negotiated by TLS. If the authenticator request
+is not present, it is omitted from this construction (that is, it is zero
+length).
 
 ### Finished
 
-A HMAC over the value
-Hash(Handshake Context || Certificate || CertificateVerify) if an authenticator
-is present, or Hash(Handshake Context || authenticator request ||
-Certificate || CertificateVerify) where Hash is the hash function for
-the handshake, and the HMAC is computed using the hash function from
-the handshake and the Finished MAC Key as a key.
+A HMAC {{!HMAC=RFC2104}} over the hashed authenticator transcript, which is the
+concatenated Handshake Context, authenticator request, Certificate, and
+CertificateVerify:
+
+```
+Hash(Handshake Context || authenticator request ||
+     Certificate || CertificateVerify)
+```
+
+The HMAC is computed using the same hash function using the Finished MAC Key as
+a key.
 
 ### Authenticator Creation
 
