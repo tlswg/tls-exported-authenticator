@@ -306,11 +306,11 @@ It returns the certificate_request_context.
 
 The "authenticate" takes as input:
 
- * a set of certificate chains and associated extensions
+* a set of certificate chains and associated extensions
 (OCSP, SCT, etc.)
- * a signer (either the private key associated with the certificate, or interface
+* a signer (either the private key associated with the certificate, or interface
 to perform private key operation) for each chain
- * an optional authenticator request
+* an optional authenticator request
 
 It returns the exported authenticator as a sequence of octets.  It is RECOMMENDED that
 the logic for selecting the certificates and extensions to include
@@ -327,8 +327,8 @@ handled independently of the application layer protocol.
 
 The "validate" API takes as input:
 
- * an optional authenticator request
- * an authenticator
+* an optional authenticator request
+* an authenticator
 
 It returns the certificate chain and extensions.
 
