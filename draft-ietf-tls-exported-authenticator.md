@@ -4,7 +4,7 @@ abbrev: TLS Exported Authenticator
 docname: draft-ietf-tls-exported-authenticator-latest
 category: std
 
-ipr:
+ipr: trust200902
 area: Security
 workgroup: TLS
 keyword: Internet-Draft
@@ -78,8 +78,9 @@ authentication in applications.
 
 The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
 "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and
-"OPTIONAL" in this document are to be interpreted as described in RFC
-2119 {{!RFC2119}}.
+"OPTIONAL" in this document are to be interpreted as described in BCP
+14 {{!RFC2119}} {{!RFC8174}} when, and only when, they appear in all
+capitals, as shown here.
 
 # Authenticator Request
 
