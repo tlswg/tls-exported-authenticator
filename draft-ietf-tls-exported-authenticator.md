@@ -194,7 +194,7 @@ ECDSA algorithms that are not supported in TLS 1.3.  If an authenticator
 request is present, the signature algorithm MUST be chosen from one of
 the signature schemes in the authenticator request.  Otherwise, the signature
 algorithm used should be chosen from the "signature_algorithms" extension
-of the ClientHello used in the connection handshake.
+sent by the peer in the TLS handshake.
 
 The signature is computed using the over the concatenation of:
 
@@ -220,7 +220,7 @@ of a Certificate message in the version of TLS negotiated.  If an authenticator
 request is present, the signature algorithms used to choose the algorithm are taken
 from the "signature_algorithms" in the from the authenticator.  If there is
 no authenticator request, the signature algorithms are chosen from the "signature_algorithms"
-extension from the ClientHello used in the connection.  This is described in
+extension from the extensions used in the TLS handshake.  This is described in
 Section 4.2.3 of {{!TLS13}} and Sections 7.4.2 and 7.4.6 of {{!RFC5246}}.
 Alternative certificate formats such as {{!RFC7250}} Raw Public Keys
 are not supported.  The "server_name" {{!RFC6066}}, "certificate_authorities"
@@ -230,8 +230,10 @@ certificate selection, with the extensions provided in the authenticator request
 taking precedence over the extensions provided in the connection handshake.
 
 If an authenticator request was provided, the Certificate message MUST contain
-only extensions present in the authenticator request. Otherwise, the Certificate
-message MUST contain only extensions present in the ClientHello.
+only extensions present in the authenticator request. Otherwise, the
+Certificate message MUST contain only extensions present in the ClientHello
+(for servers), ServerHello (for clients in TLS 1.2), or EncryptedExtensions
+(for clients in TLS 1.3).
 
 ### Authenticator Creation
 
