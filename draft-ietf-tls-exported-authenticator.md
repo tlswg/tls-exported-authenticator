@@ -96,15 +96,15 @@ from Section 4.3.2 of {{!TLS13=I-D.ietf-tls-tls13}}.  This message does not
 include the TLS record layer and is therefore not encrypted with a
 handshake key.
 
-CertificateRequest
-: This message is used to define the parameters in a request for an authenticator.
+The CertificateRequest is used to define the parameters in a request for an
+authenticator. The definition for TLS 1.3 is:
 
        struct {
           opaque certificate_request_context<0..2^8-1>;
           Extension extensions<2..2^16-1>;
        } CertificateRequest;
 
-certificate_request_context
+certificate_request_context:
 : An opaque string which identifies the certificate request and which will
 be echoed in the authenticator message.  The certificate_request_context
 MUST be unique within the scope of this connection (thus preventing replay
@@ -113,9 +113,9 @@ be unpredictable to the peer (e.g., by randomly generating it) in order
 to prevent an attacker who has temporary access to the peer's private
 key from pre-computing valid authenticators.
 
-extensions
+extensions:
 : The extensions that are allowed in this structure include the extensions
-defined for CertificateRequest messages defined in Section 4.2. of {{!TLS13=I-D.ietf-tls-tls13}}
+defined for CertificateRequest messages defined in Section 4.2. of {{!TLS13}}
 and the server_name {{!RFC6066}} extension, which is allowed for
 client-generated authenticator requests.
 
@@ -205,7 +205,7 @@ Certificate message MUST contain only extensions present in the TLS handshake.
 ### CertificateVerify
 
 This message is used to provide explicit proof that an endpoint possesses the
-private key corresponding to its certificate.
+private key corresponding to its certificate.  The definition for TLS 1.3 is:
 
        struct {
           SignatureScheme algorithm;
