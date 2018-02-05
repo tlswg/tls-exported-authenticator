@@ -214,13 +214,16 @@ private key corresponding to its certificate.
 
 The algorithm field specifies the signature algorithm used (see Section 4.2.3 of {{!TLS13}}
 for the definition of this field).  The signature is a digital signature
-using that algorithm.  The signature scheme MUST be a valid signature
-scheme for TLS 1.3.  This excludes all RSASSA-PKCS1-v1_5 algorithms and
-ECDSA algorithms that are not supported in TLS 1.3.  If an authenticator
-request is present, the signature algorithm MUST be chosen from one of
-the signature schemes in the authenticator request.  Otherwise, the signature
-algorithm used should be chosen from the "signature_algorithms" extension
-sent by the peer in the TLS handshake.
+using that algorithm.
+
+The signature scheme MUST be a valid signature scheme for TLS 1.3. This
+excludes all RSASSA-PKCS1-v1_5 algorithms and combinations of ECDSA and hash
+algorithms that are not supported in TLS 1.3.
+
+If an authenticator request is present, the signature algorithm MUST be chosen
+from one of the signature schemes in the authenticator request. Otherwise, the
+signature algorithm used should be chosen from the "signature_algorithms"
+extension sent by the peer in the TLS handshake.
 
 The signature is computed using the over the concatenation of:
 
