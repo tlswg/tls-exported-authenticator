@@ -177,7 +177,7 @@ certificate_request_context, which is extracted from the authenticator request i
 present.  If no authenticator request is provided, it is zero-length.
 
 The certificates chosen in the Certificate message MUST conform to the requirements
-of a Certificate message in the version of TLS negotiated.  If an authenticator
+of a Certificate message in the negotiated version of TLS.  If an authenticator
 request is present, the signature algorithms used to choose the algorithm are taken
 from the "signature_algorithms" in the from the authenticator.  If there is
 no authenticator request, the signature algorithms are chosen from the "signature_algorithms"
