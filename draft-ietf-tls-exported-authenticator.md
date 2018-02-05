@@ -176,6 +176,26 @@ The certificate message contains an opaque string called
 certificate_request_context, which is extracted from the authenticator request if
 present.  If no authenticator request is provided, it is zero-length.
 
+The certificates chosen in the Certificate message MUST conform to the requirements
+of a Certificate message in the version of TLS negotiated.  If an authenticator
+request is present, the signature algorithms used to choose the algorithm are taken
+from the "signature_algorithms" in the from the authenticator.  If there is
+no authenticator request, the signature algorithms are chosen from the "signature_algorithms"
+extension from the extensions used in the TLS handshake.  This is described in
+Section 4.2.3 of {{!TLS13}} and Sections 7.4.2 and 7.4.6 of {{!RFC5246}}.
+Alternative certificate formats such as {{!RFC7250}} Raw Public Keys
+are not supported.  The "server_name" {{!RFC6066}}, "certificate_authorities"
+(Section 4.2.4. of {{!TLS13}}), or "oid_filters"
+(Section 4.2.5. of {{!TLS13}}) extensions are used to guide
+certificate selection, with the extensions provided in the authenticator request
+taking precedence over the extensions provided in the connection handshake.
+
+If an authenticator request was provided, the Certificate message MUST contain
+only extensions present in the authenticator request. Otherwise, the
+Certificate message MUST contain only extensions present in the ClientHello
+(for servers), ServerHello (for clients in TLS 1.2), or EncryptedExtensions
+(for clients in TLS 1.3).
+
 ### CertificateVerify
 
 This message is used to provide explicit proof that an endpoint possesses the
@@ -214,26 +234,6 @@ is present, or Hash(Handshake Context || authenticator request ||
 Certificate || CertificateVerify) where Hash is the hash function for
 the handshake, and the HMAC is computed using the hash function from
 the handshake and the Finished MAC Key as a key.
-
-The certificates chosen in the Certificate message MUST conform to the requirements
-of a Certificate message in the version of TLS negotiated.  If an authenticator
-request is present, the signature algorithms used to choose the algorithm are taken
-from the "signature_algorithms" in the from the authenticator.  If there is
-no authenticator request, the signature algorithms are chosen from the "signature_algorithms"
-extension from the extensions used in the TLS handshake.  This is described in
-Section 4.2.3 of {{!TLS13}} and Sections 7.4.2 and 7.4.6 of {{!RFC5246}}.
-Alternative certificate formats such as {{!RFC7250}} Raw Public Keys
-are not supported.  The "server_name" {{!RFC6066}}, "certificate_authorities"
-(Section 4.2.4. of {{!TLS13}}), or "oid_filters"
-(Section 4.2.5. of {{!TLS13}}) extensions are used to guide
-certificate selection, with the extensions provided in the authenticator request
-taking precedence over the extensions provided in the connection handshake.
-
-If an authenticator request was provided, the Certificate message MUST contain
-only extensions present in the authenticator request. Otherwise, the
-Certificate message MUST contain only extensions present in the ClientHello
-(for servers), ServerHello (for clients in TLS 1.2), or EncryptedExtensions
-(for clients in TLS 1.3).
 
 ### Authenticator Creation
 
