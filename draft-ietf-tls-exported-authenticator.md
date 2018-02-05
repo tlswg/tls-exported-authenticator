@@ -131,7 +131,7 @@ An authenticator message can be constructed by either the client or the
 server given an established TLS connection, a certificate, and a corresponding
 private key.  For clients, an authenticator request is required; for servers
 an authenticator request is optional.  The authenticator uses the message
-structures from Section 4.4 of {{!TLS13=I-D.ietf-tls-tls13}}, but different
+structures from Section 4.4 of {{!TLS13}}, but different
 parameters.  These messages do not include the TLS record layer and are
 therefore not encrypted with a handshake key.
 
@@ -139,7 +139,7 @@ therefore not encrypted with a handshake key.
 
 Each authenticator is computed using a Handshake Context and Finished MAC Key
 derived from the TLS session.  These values are derived using an exporter as
-described in {{!RFC5705}} (for TLS 1.2) or {{!TLS13=I-D.ietf-tls-tls13}} (for
+described in {{!RFC5705}} (for TLS 1.2) or {{!TLS13}} (for
 TLS 1.3).  These values use different labels depending on the role of the
 sender:
 
