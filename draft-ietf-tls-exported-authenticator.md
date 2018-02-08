@@ -246,8 +246,8 @@ length).
 ### Finished
 
 A HMAC {{!HMAC=RFC2104}} over the hashed authenticator transcript, which is the
-concatenated Handshake Context, authenticator request, Certificate, and
-CertificateVerify:
+concatenated Handshake Context, authenticator request (if present),
+Certificate, and CertificateVerify:
 
 ```
 Hash(Handshake Context || authenticator request ||
@@ -259,7 +259,7 @@ a key.
 
 ### Authenticator Creation
 
-An endpoint constructs an authenticator by concatenating serializing the Certificate, CertificateVerify, and Finished as TLS handshake messages and concatenating the octets:
+An endpoint constructs an authenticator by serializing the Certificate, CertificateVerify, and Finished as TLS handshake messages and concatenating the octets:
 
 ```
 Certificate || CertificateVerify || Finished
