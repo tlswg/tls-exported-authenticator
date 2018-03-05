@@ -181,7 +181,8 @@ Section 4.4.2.
 
 The certificate message contains an opaque string called
 certificate_request_context, which is extracted from the authenticator request if
-present.  If no authenticator request is provided, it is zero-length.
+present.  If no authenticator request is provided, the certificate_request_context
+can be chosen arbitrarily.
 
 The certificates chosen in the Certificate message MUST conform to the
 requirements of a Certificate message in the negotiated version of TLS. In
@@ -310,7 +311,7 @@ The "authenticate" takes as input:
 (OCSP, SCT, etc.)
 * a signer (either the private key associated with the certificate, or interface
 to perform private key operation) for each chain
-* an optional authenticator request
+* an optional authenticator request or certificate_request_context (from 0 to 255 bytes)
 
 It returns the exported authenticator as a sequence of octets.  It is RECOMMENDED that
 the logic for selecting the certificates and extensions to include
