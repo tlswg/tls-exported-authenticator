@@ -236,9 +236,9 @@ The signature is computed using the over the concatenation of:
 The authenticator transcript is the hash of the concatenated Handshake Context,
 authenticator request (if present), and Certificate message:
 
-```
+~~~
 Hash(Handshake Context || authenticator request || Certificate)
-```
+~~~
 
 Where Hash is the hash function negotiated by TLS. If the authenticator request
 is not present, it is omitted from this construction (that is, it is zero
@@ -250,10 +250,10 @@ A HMAC {{!HMAC=RFC2104}} over the hashed authenticator transcript, which is the
 concatenated Handshake Context, authenticator request (if present),
 Certificate, and CertificateVerify:
 
-```
+~~~
 Hash(Handshake Context || authenticator request ||
      Certificate || CertificateVerify)
-```
+~~~
 
 The HMAC is computed using the same hash function using the Finished MAC Key as
 a key.
@@ -262,9 +262,9 @@ a key.
 
 An endpoint constructs an authenticator by serializing the Certificate, CertificateVerify, and Finished as TLS handshake messages and concatenating the octets:
 
-```
+~~~
 Certificate || CertificateVerify || Finished
-```
+~~~
 
 A given authenticator can be validated by checking the validity of the
 CertificateVerify message given the authenticator request (if used) and recomputing the
