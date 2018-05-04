@@ -70,9 +70,9 @@ only TLS 1.2 and later are supported.
 Post-handshake authentication is defined in TLS 1.3, but it has
 the disadvantage of requiring additional state to be stored in the TLS
 state machine and it composes poorly with multiplexed connection protocols
-like HTTP/2.  It is also only available for client authentication.  This
-mechanism is intended to be used as part of a replacement for post-handshake
-authentication in applications.
+like HTTP/2 {{?RFC7540}}.  It is also only available for client authentication.
+This mechanism is intended to be used as part of a replacement for
+post-handshake authentication in applications.
 
 # Conventions and Terminology
 
