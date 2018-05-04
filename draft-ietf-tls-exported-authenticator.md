@@ -130,11 +130,10 @@ to keep the certificate confidential.
 An authenticator message can be constructed by either the client or the
 server given an established TLS connection, a certificate, and a corresponding
 private key.  Clients MUST NOT send an authenticator without a preceding 
-authenticator request is required; for servers an authenticator request 
-is optional.  The authenticator uses the message
-structures from Section 4.4 of {{!TLS13}}, but different
-parameters.  These messages do not include the TLS record layer and are
-therefore not encrypted with a handshake key.
+authenticator request; for servers an authenticator request is optional.  
+The authenticator uses the message structures from Section 4.4 of {{!TLS13}}, 
+but different parameters.  These messages do not include the TLS record layer 
+and are therefore not encrypted with a handshake key.
 
 ## Authenticator Keys
 
