@@ -169,7 +169,9 @@ Certificate, CertificateVerify, and Finished messages.
 If an authenticator request is present, the extensions used to guide the
 construction of these messages are taken from the authenticator request. If
 there is no authenticator request, the extensions are chosen from the TLS
-handshake. That is, the extensions received in a ClientHello (for servers).
+handshake. Only servers can provide an authenticator without a corresponding 
+request. In such cases, ClientHello extensions are used to determine permissible
+extensions in the Certificate message.
 
 ### Certificate
 
