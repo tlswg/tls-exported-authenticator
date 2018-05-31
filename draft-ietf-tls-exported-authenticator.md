@@ -247,10 +247,10 @@ length).
 If the party that generates the exported authenticator does so with a different
 connection than the party that is validating it, then the Handshake Context will
 not match, resulting in a CertificateVerify message that does not validate.
-This include situations in which the application data is sent via TLS-terminating
+This includes situations in which the application data is sent via TLS-terminating
 proxy.  Given a failed CertificateVerify validation, it may be helpful for
 the application to confirm that both peers share the same connection
-using a value derived from the exporter before taking a user-visible action.
+using a value derived from the connection secrets before taking a user-visible action.
 
 ### Finished
 
