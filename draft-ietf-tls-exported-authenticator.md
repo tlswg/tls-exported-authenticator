@@ -273,12 +273,13 @@ Finished message to see if it matches.
 # Empty Authenticator
 
 If, given an authenticator request, the endpoint does have an appropriate certificate
-or does not want to return one, it may construct an authenticated denial of existence
+or does not want to return one, it constructs an authenticated refusal
 called an empty authenticator.  This is an HMAC over the hashed authenticator
-transcript with the Certificate and CertificateVerify messages omitted:
+transcript with a Certificate message containing no CertificateEntries
+and the CertificateVerify message omitted:
 
 ```
-Hash(Handshake Context || authenticator request)
+Hash(Handshake Context || authenticator request || Certificate)
 ```
 
 The HMAC is computed using the same hash function using the Finished MAC Key as a key.
@@ -345,8 +346,10 @@ The "validate" API takes as input:
 * an optional authenticator request
 * an authenticator
 
-It returns the certificate chain and extensions for a non-empty authenticator,
-and a status to indicate whether the authenticator is valid or not.
+It returns the certificate chain and extensions and a status to indicate
+whether the authenticator is valid or not.  If the authenticator was
+empty - that is, it did not contain a certificate - the certificate
+chain will contain no certificates.
 
 # IANA Considerations
 
