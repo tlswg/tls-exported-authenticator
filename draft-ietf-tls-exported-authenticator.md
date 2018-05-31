@@ -157,9 +157,10 @@ sender:
 
 The context_value used for the exporter is absent (length zero) for all four
 values. The length of the exported value is equal to the length of the output of
-the hash function selected in TLS for the pseudorandom function (PRF). Cipher
+the hash function selected in TLS for the pseudorandom function (PRF).  Cipher
 suites that do not use the TLS PRF MUST define a hash function that can be used
-for this purpose or they cannot be used.
+for this purpose or they cannot be used.  For TLS 1.3 symmetric cipher suites,
+the hash algorithm used with HKDF is used.
 
 If the connection is TLS 1.2, the master secret MUST have been computed
 with the extended master secret {{!RFC7627}} to avoid key synchronization attacks.
