@@ -189,22 +189,24 @@ present.  If no authenticator request is provided, the certificate_request_conte
 can be chosen arbitrarily.
 
 The certificates chosen in the Certificate message MUST conform to the
-requirements of a Certificate message in the negotiated version of TLS. In
+requirements of a Certificate message in the negotiated version of TLS.  In
 particular, the certificate MUST be valid for the a signature algorithm
-indicated by the peer in a "signature_algorithms" extension, as described in
-Section 4.2.3 of {{!TLS13}} and Sections 7.4.2 and 7.4.6 of {{!RFC5246}}.
+indicated by the peer in a "signature_algorithms_cert" extension, as described in
+Section 4.2.3 of {{!TLS13}} for TLS 1.3 or the "signature_algorithms" extension
+from Sections 7.4.2 and 7.4.6 of {{!RFC5246}} for TLS 1.2.
 
-In addition to "signature_algorithms", the "server_name" {{!RFC6066}},
-"certificate_authorities" (Section 4.2.4. of {{!TLS13}}), or "oid_filters"
+In addition to "signature_algorithms" and "signature_algorithms_cert",
+the "server_name" {{!RFC6066}}, "certificate_authorities"
+(Section 4.2.4. of {{!TLS13}}), and "oid_filters"
 (Section 4.2.5. of {{!TLS13}}) extensions are used to guide certificate
-selection. These extensions are taken from the authenticator request if
+selection.  These extensions are taken from the authenticator request if
 present, or the TLS handshake if not.
 
 Alternative certificate formats such as {{!RFC7250}} Raw Public Keys
 are not supported in this version of the specification.
 
 If an authenticator request was provided, the Certificate message MUST contain
-only extensions present in the authenticator request. Otherwise, the
+only extensions present in the authenticator request.  Otherwise, the
 Certificate message MUST contain only extensions present in the TLS handshake.
 
 ### CertificateVerify
@@ -226,9 +228,10 @@ excludes all RSASSA-PKCS1-v1_5 algorithms and combinations of ECDSA and hash
 algorithms that are not supported in TLS 1.3.
 
 If an authenticator request is present, the signature algorithm MUST be chosen
-from one of the signature schemes in the authenticator request. Otherwise, the
-signature algorithm used should be chosen from the "signature_algorithms"
-extension sent by the peer in the TLS handshake.
+from one of the signature schemes in the authenticator request.  Otherwise, the
+signature algorithm used should be chosen from the "signature_algorithms_cert"
+extension (in TLS 1.3) or "signature_algorithms" (in TLS 1.2) sent by the peer
+in the TLS handshake.
 
 The signature is computed using the over the concatenation of:
 
@@ -295,7 +298,7 @@ The following sections describes APIs that are considered necessary to implement
 The "request" API takes as input:
 
 * certificate_request_context (from 0 to 255 bytes)
-* set of extensions to include (this MUST include signature_algorithms)
+* set of extensions to include (this MUST include signature_algorithms_cert)
 
 It returns an authenticator request, which is a sequence of octets that includes a CertificateRequest message.
 
