@@ -313,7 +313,7 @@ The "authenticate" takes as input:
 to perform private key operation) for each chain
 * an optional authenticator request or certificate_request_context (from 0 to 255 bytes)
 
-It returns the exported authenticator as a sequence of octets.  It is RECOMMENDED that
+It returns the exported authenticator as a sequence of octets.  Ideally,
 the logic for selecting the certificates and extensions to include
 in the exporter is implemented in the TLS library.  Implementing this
 in the TLS library lets the implementer take advantage of existing
