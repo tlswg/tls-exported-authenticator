@@ -284,6 +284,20 @@ A given authenticator can be validated by checking the validity of the
 CertificateVerify message given the authenticator request (if used) and recomputing the
 Finished message to see if it matches.
 
+# Empty Authenticator
+
+If, given an authenticator request, the endpoint does have an appropriate certificate
+or does not want to return one, it constructs an authenticated refusal
+called an empty authenticator.  This is an HMAC over the hashed authenticator
+transcript with a Certificate message containing no CertificateEntries
+and the CertificateVerify message omitted:
+
+```
+Hash(Handshake Context || authenticator request || Certificate)
+```
+
+The HMAC is computed using the same hash function using the Finished MAC Key as a key.
+
 # API considerations
 
 The creation and validation of both authenticator requests and authenticators
@@ -327,7 +341,8 @@ The "authenticate" takes as input:
 to perform private key operation) for each chain
 * an optional authenticator request or certificate_request_context (from 0 to 255 bytes)
 
-It returns the exported authenticator as a sequence of octets.  Ideally,
+It returns either the exported authenticator or an empty authenticator
+as a sequence of octets.  It is RECOMMENDED that
 the logic for selecting the certificates and extensions to include
 in the exporter is implemented in the TLS library.  Implementing this
 in the TLS library lets the implementer take advantage of existing
@@ -345,7 +360,10 @@ The "validate" API takes as input:
 * an optional authenticator request
 * an authenticator
 
-It returns the certificate chain and extensions.
+It returns the certificate chain and extensions and a status to indicate
+whether the authenticator is valid or not.  If the authenticator was
+empty - that is, it did not contain a certificate - the certificate
+chain will contain no certificates.
 
 # IANA Considerations
 
