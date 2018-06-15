@@ -132,10 +132,10 @@ to keep the certificate confidential.
 
 An authenticator message can be constructed by either the client or the
 server given an established TLS connection, a certificate, and a corresponding
-private key.  Clients MUST NOT send an authenticator without a preceding 
-authenticator request; for servers an authenticator request is optional.  
-The authenticator uses the message structures from Section 4.4 of {{!TLS13}}, 
-but different parameters.  These messages do not include the TLS record layer 
+private key.  Clients MUST NOT send an authenticator without a preceding
+authenticator request; for servers an authenticator request is optional.
+The authenticator uses the message structures from Section 4.4 of {{!TLS13}},
+but different parameters.  These messages do not include the TLS record layer
 and are therefore not encrypted with a handshake key.
 
 ## Authenticator Keys
@@ -173,7 +173,7 @@ Certificate, CertificateVerify, and Finished messages.
 If an authenticator request is present, the extensions used to guide the
 construction of these messages are taken from the authenticator request. If
 there is no authenticator request, the extensions are chosen from the TLS
-handshake. Only servers can provide an authenticator without a corresponding 
+handshake. Only servers can provide an authenticator without a corresponding
 request. In such cases, ClientHello extensions are used to determine permissible
 extensions in the Certificate message.
 
