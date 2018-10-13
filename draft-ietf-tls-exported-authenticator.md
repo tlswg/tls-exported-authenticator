@@ -232,7 +232,7 @@ from one of the signature schemes in the authenticator request.  Otherwise, the
 signature algorithm used should be chosen from the "signature_algorithms" sent
 by the peer in the TLS handshake.
 
-The signature is computed using the over the concatenation of:
+The signature is computed using the chosen signature scheme over the concatenation of:
 
 * A string that consists of octet 32 (0x20) repeated 64 times
 * The context string "Exported Authenticator" (which is not NULL-terminated)
