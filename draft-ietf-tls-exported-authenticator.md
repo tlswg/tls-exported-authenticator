@@ -367,7 +367,11 @@ chain will contain no certificates.
 
 # IANA Considerations
 
-This document has no IANA actions.
+## Update of the TLS ExtensionType Registry
+
+IANA is requested to update the entry for server_name(0) in the registry for
+ExtensionType (defined in {{!TLS13}}) by replacing the value in the "TLS 1.3"
+column with the value "CH, EE, CR".
 
 # Security Considerations {#security}
 
