@@ -155,7 +155,7 @@ sender:
   "EXPORTER-client authenticator finished key" or "EXPORTER-server authenticator
   finished key" for authenticators sent by the client and server respectively.
 
-The context_value used for the exporter is absent (length zero) for all four
+The context_value used for the exporter is empty (zero length) for all four
 values. The length of the exported value is equal to the length of the output of
 the hash function selected in TLS for the pseudorandom function (PRF).  Cipher
 suites that do not use the TLS PRF MUST define a hash function that can be used
