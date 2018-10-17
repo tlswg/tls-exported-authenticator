@@ -92,7 +92,7 @@ keep the request confidential.
 
 An authenticator request message can be constructed by either the client or the
 server.  This authenticator request uses the CertificateRequest message structure
-from Section 4.3.2 of {{!TLS13=I-D.ietf-tls-tls13}}.  This message does not
+from Section 4.3.2 of {{!TLS13=RFC8446}}.  This message does not
 include the TLS record layer and is therefore not encrypted with a
 handshake key.
 
