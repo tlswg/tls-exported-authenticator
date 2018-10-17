@@ -373,6 +373,13 @@ IANA is requested to update the entry for server_name(0) in the registry for
 ExtensionType (defined in {{!TLS13}}) by replacing the value in the "TLS 1.3"
 column with the value "CH, EE, CR".
 
+## Update of the TLS Exporter Labels Registry
+
+IANA is requested to add the following entries to the registry for Exporter
+Labels (defined in {{!RFC5705}}): "EXPORTER-server authenticator handshake
+context", "EXPORTER-client authenticator finished key" and "EXPORTER-server
+authenticator finished key".
+
 # Security Considerations {#security}
 
 The Certificate/Verify/Finished pattern intentionally looks like the TLS 1.3
