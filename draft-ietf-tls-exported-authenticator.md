@@ -323,14 +323,6 @@ The "request" API takes as input:
 
 It returns an authenticator request, which is a sequence of octets that includes a CertificateRequest message.
 
-## The "get context" API
-
-The "get context" API takes as input:
-
-* authenticator
-
-It returns the certificate_request_context.
-
 ## The "authenticate" API
 
 The "authenticate" takes as input:
