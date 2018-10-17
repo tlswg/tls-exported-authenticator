@@ -171,11 +171,11 @@ An authenticator is formed from the concatenation of TLS 1.3 {{!TLS13}}
 Certificate, CertificateVerify, and Finished messages.
 
 If an authenticator request is present, the extensions used to guide the
-construction of these messages are taken from the authenticator request. If
-there is no authenticator request, the extensions are chosen from the TLS
-handshake. Only servers can provide an authenticator without a corresponding
-request. In such cases, ClientHello extensions are used to determine permissible
-extensions in the Certificate message.
+construction of these messages are taken from the authenticator request.
+Unrecognized extensions MUST be ignored.  If there is no authenticator request,
+the extensions are chosen from the TLS handshake. Only servers can provide
+an authenticator without a corresponding request. In such cases, ClientHello
+extensions are used to determine permissible extensions in the Certificate message.
 
 ### Certificate
 
