@@ -286,11 +286,11 @@ Finished message to see if it matches.
 
 # Empty Authenticator
 
-If, given an authenticator request, the endpoint does have an appropriate certificate
-or does not want to return one, it constructs an authenticated refusal
-called an empty authenticator.  This is an HMAC over the hashed authenticator
-transcript with a Certificate message containing no CertificateEntries
-and the CertificateVerify message omitted:
+If, given an authenticator request, the endpoint does not have an appropriate
+certificate or does not want to return one, it constructs an authenticated
+refusal called an empty authenticator.  This is an HMAC over the hashed
+authenticator transcript with a Certificate message containing no
+CertificateEntries and the CertificateVerify message omitted:
 
 ```
 Hash(Handshake Context || authenticator request || Certificate)
