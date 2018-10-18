@@ -172,12 +172,12 @@ Certificate, CertificateVerify, and Finished messages.
 
 If an authenticator request is present, the extensions used to guide the
 construction of these messages are taken from the authenticator request.
-If the certificate_request_context from the authenticator request has already
-been used in the connection, then no authenticator should be constructed.
-If there is no authenticator request, the extensions are chosen from the TLS
-handshake. Only servers can provide an authenticator without a corresponding
-request. In such cases, ClientHello extensions are used to determine permissible
-extensions in the Certificate message.
+Unrecognized extensions MUST be ignored.  If the certificate_request_context
+from the authenticator request has already been used in the connection, then
+no authenticator should be constructed.  If there is no authenticator request,
+the extensions are chosen from the TLS handshake. Only servers can provide
+an authenticator without a corresponding request. In such cases, ClientHello
+extensions are used to determine permissible extensions in the Certificate message.
 
 ### Certificate
 
