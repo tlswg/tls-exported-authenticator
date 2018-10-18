@@ -171,8 +171,10 @@ An authenticator is formed from the concatenation of TLS 1.3 {{!TLS13}}
 Certificate, CertificateVerify, and Finished messages.
 
 If an authenticator request is present, the extensions used to guide the
-construction of these messages are taken from the authenticator request. If
-there is no authenticator request, the extensions are chosen from the TLS
+construction of these messages are taken from the authenticator request.
+If the certificate_request_context from the authenticator request has already
+been used in the connection, then no authenticator should be contructed.
+If there is no authenticator request, the extensions are chosen from the TLS
 handshake. Only servers can provide an authenticator without a corresponding
 request. In such cases, ClientHello extensions are used to determine permissible
 extensions in the Certificate message.
@@ -186,7 +188,8 @@ Section 4.4.2.
 The certificate message contains an opaque string called
 certificate_request_context, which is extracted from the authenticator request if
 present.  If no authenticator request is provided, the certificate_request_context
-can be chosen arbitrarily but MUST be unique within the scope of the connection.
+can be chosen arbitrarily but MUST be unique within the scope of the connection
+and be unpredictable to the peer.
 
 The certificates chosen in the Certificate message MUST conform to the
 requirements of a Certificate message in the negotiated version of TLS.  In
