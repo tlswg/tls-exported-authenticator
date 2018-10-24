@@ -330,7 +330,7 @@ It returns an authenticator request, which is a sequence of octets that includes
 
 The "get context" API takes as input:
 
-* authenticator
+* authenticator or authenticator request
 
 It returns the certificate_request_context.
 
