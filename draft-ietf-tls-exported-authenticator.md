@@ -196,7 +196,8 @@ ClientHello extensions are used to determine permissible extensions
 in the Certificate message.  This follows the general model for
 extensions in TLS in which extensions can only be included
 as part of a Certificate message if they were previously sent as
-part of a CertificateRequest message or ClientHello message.
+part of a CertificateRequest message or ClientHello message, to ensure that the recipient
+will be able to process such extensions.
 
 
 ### Certificate
