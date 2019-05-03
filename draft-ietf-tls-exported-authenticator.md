@@ -1,4 +1,4 @@
----
+e--
 title: Exported Authenticators in TLS
 abbrev: TLS Exported Authenticator
 docname: draft-ietf-tls-exported-authenticator-latest
@@ -67,7 +67,7 @@ post-handshake client authentication given an existing TLS connection.
 The mechanism described in this document may be used to replace the
 post-handshake authentication functionality provided by renegotiation.
 Unlike renegotiation, exported Authenticator-based post-handshake
-authentication does not require any on-the-wire changes.
+authentication does not require any changes at the TLS layer.
 
 Post-handshake authentication is defined in TLS 1.3, but it has the
 disadvantage of requiring additional state to be stored as part of the TLS
@@ -93,8 +93,9 @@ capitals, as shown here.
 # Authenticator Request
 
 The authenticator request is a structured message that can be created by either
-party of a TLS connection using data exported from that connection.  It can be transmitted to the other party of
-the TLS connection at the application layer.  The application layer protocol
+party of a TLS connection using data exported from that connection.  It can
+be transmitted to the other party of the TLS connection at the application
+layer.  The application layer protocol
 used to send the authenticator SHOULD use TLS as its underlying transport to
 keep the request confidential.
 
@@ -169,13 +170,14 @@ sender:
 The context_value used for the exporter is empty (zero length) for all four
 values.  There is no need to include additional context
 information at this stage since the application-supplied context
-is included in the authenticator itself.  The length of the exported value is equal to the length of the output of
-the hash function selected in TLS for the pseudorandom function (PRF).  Exported authenticators cannot be
+is included in the authenticator itself.  The length of the exported
+value is equal to the length of the output of the hash function selected
+in TLS for the pseudorandom function (PRF).  Exported authenticators cannot be
 used with cipher suites that do not use the TLS PRF and have not defined
 a hash function for this purpose.  This hash is referred to as the authenticator hash.
 
-Let's rephrase this as "Exported Authenticators MUST NOT be generated or
-accepted on connectons not using the extended master secret {{!RFC7627}}
+Exported Authenticators MUST NOT be generated or
+accepted on connections not using the extended master secret {{!RFC7627}}
 extension, to avoid key synchronization attacks", to be very explicit
 about the prohibited behavior.
 
@@ -185,7 +187,8 @@ An authenticator is formed from the concatenation of TLS 1.3 {{!TLS13}}
 Certificate, CertificateVerify, and Finished messages.
 
 If the peer creating the certificate_request_context has already created or
-correctly validated an authenticator with the same value, then no authenticator should be constructed.  If there is no authenticator request,
+correctly validated an authenticator with the same value, then no
+authenticator should be constructed.  If there is no authenticator request,
 the extensions are chosen from the TLS handshake.  Only servers can provide
 an authenticator without a corresponding request.
 
@@ -250,9 +253,10 @@ excludes all RSASSA-PKCS1-v1_5 algorithms and combinations of ECDSA and hash
 algorithms that are not supported in TLS 1.3.
 
 If an authenticator request is present, the signature algorithm MUST be chosen
-from one of the signature schemes present in the authenticator request.     Otherwise, the signature algorithm used should be chosen
+from one of the signature schemes present in the authenticator request.
+Otherwise, the signature algorithm used should be chosen
 from the "signature_algorithms" sent by the peer in the ClientHello of the TLS
-handshake. There are no available signature algorithms, then no
+handshake.  If there are no available signature algorithms, then no
 authenticator should be constructed.
 
 The signature is computed using the chosen signature scheme over the concatenation of:
