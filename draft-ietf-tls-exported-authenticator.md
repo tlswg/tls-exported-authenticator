@@ -176,10 +176,9 @@ in TLS for the pseudorandom function (PRF).  Exported authenticators cannot be
 used with cipher suites that do not use the TLS PRF and have not defined
 a hash function for this purpose.  This hash is referred to as the authenticator hash.
 
-Exported Authenticators MUST NOT be generated or
-accepted on connections not using the extended master secret {{!RFC7627}}
-extension, to avoid key synchronization attacks", to be very explicit
-about the prohibited behavior.
+Exported Authenticators MUST NOT be generated or 
+accepted on connectons not using the extended master secret {{!RFC7627}}
+extension, to avoid key synchronization attacks.
 
 ## Authenticator Construction
 
