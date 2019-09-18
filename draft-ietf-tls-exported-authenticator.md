@@ -34,8 +34,8 @@ informative:
 --- abstract
 
 This document describes a mechanism in Transport Layer Security (TLS) to
-provide an exportable proof of ownership of a certificate that can be
-transmitted out of band and verified by the peer.
+provide a proof of ownership of a certificate.  This proof can be exported
+by one peer, transmitted out-of-band to the other peer verified.
 
 --- middle
 
@@ -78,8 +78,8 @@ higher-layer protocol.  For example, multiplexed connection protocols
 like HTTP/2 {{!RFC7540}} do not have a notion of which TLS record
 a given message is a part of. 
 
-For simplicity, the mechanisms described in this document require a
-TLS version 1.2 or later.
+For simplicity, TLS version 1.2 or later are REQUIRED to implement the
+mechanisms described in this document.
 
 
 # Conventions and Terminology
@@ -89,6 +89,27 @@ The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
 "OPTIONAL" in this document are to be interpreted as described in BCP
 14 {{!RFC2119}} {{!RFC8174}} when, and only when, they appear in all
 capitals, as shown here.
+
+# Message Sequences
+
+There are two types of messages defined in this document: Authenticator Requests and Authenticators.  These can be combined in the following three sequences:
+
+Client Authentication
+
+* Server generates Authenticator Request
+* Client generates Authenticator from Server's Authenticator Request
+* Server validates Client's Authenticator
+
+Server Authentication
+
+* Client generates Authenticator Request
+* Server generates Authenticator from Client's Authenticator Request
+* Client validates Server's Authenticator
+
+Spontaneous Server Authentication
+
+* Server generates Authenticator
+* Client validates Server's Authenticator
 
 # Authenticator Request
 
@@ -101,12 +122,11 @@ keep the request confidential.
 
 An authenticator request message can be constructed by either the client or the
 server.  This authenticator request uses the CertificateRequest message structure
-from Section 4.3.2 of {{!TLS13=RFC8446}}.  This message does not
-include any TLS framing and is not encrypted with a
-handshake key.
+from Section 4.3.2 of {{!TLS13=RFC8446}}, even if the TLS connection protocol
+is TLS 1.2.  The CertificateRequest is used to define the parameters in a request for an
+authenticator.  This message does not include any TLS framing and is not encrypted
+with a handshake key.
 
-The CertificateRequest is used to define the parameters in a request for an
-authenticator.  This message reuses the structure to the CertificateRequest message in {{!TLS13}}.
 The uniqueness requirements of the certificate_request_context apply
 only to CertificateRequest messages that are used as part of authenticator requests.
 There is no impact if the value of a certificate_request_context used in an authenticator
@@ -154,7 +174,7 @@ the server.
 
 Each authenticator is computed using a Handshake Context and Finished MAC Key
 derived from the TLS session.  These values are derived using an exporter as
-described in {{!RFC5705}} (for TLS 1.2) or {{!TLS13}} (for
+described in {{!RFC5705}} (for TLS 1.2) or Sec. 7.5 of {{!TLS13}} (for
 TLS 1.3).  These values use different labels depending on the role of the
 sender:
 
@@ -176,9 +196,9 @@ in TLS for the pseudorandom function (PRF).  Exported authenticators cannot be
 used with cipher suites that do not use the TLS PRF and have not defined
 a hash function for this purpose.  This hash is referred to as the authenticator hash.
 
-Exported Authenticators MUST NOT be generated or 
-accepted on connectons not using the extended master secret {{!RFC7627}}
-extension, to avoid key synchronization attacks.
+To avoid key synchronization attacks, Exported Authenticators MUST NOT be generated or
+accepted on TLS 1.2 connectons that did not negotiate
+the extended master secret {{!RFC7627}}.
 
 ## Authenticator Construction
 
@@ -188,8 +208,8 @@ Certificate, CertificateVerify, and Finished messages.
 If the peer creating the certificate_request_context has already created or
 correctly validated an authenticator with the same value, then no
 authenticator should be constructed.  If there is no authenticator request,
-the extensions are chosen from the TLS handshake.  Only servers can provide
-an authenticator without a corresponding request.
+the extensions are chosen from those presented in the TLS handshake's ClientHello.
+Only servers can provide an authenticator without a corresponding request.
 
 ClientHello extensions are used to determine permissible extensions
 in the Certificate message.  This follows the general model for
@@ -201,7 +221,7 @@ will be able to process such extensions.
 
 ### Certificate
 
-The certificate to be used for authentication and any
+The Certificate message contains the certificate to be used for authentication and any
 supporting certificates in the chain. This structure is defined in {{!TLS13}},
 Section 4.4.2.
 
@@ -289,15 +309,13 @@ using a value derived from the connection secrets before taking a user-visible a
 
 A HMAC {{!HMAC=RFC2104}} over the hashed authenticator transcript, which is the
 concatenated Handshake Context, authenticator request (if present),
-Certificate, and CertificateVerify:
-
-~~~
-Hash(Handshake Context || authenticator request ||
-     Certificate || CertificateVerify)
-~~~
-
-The HMAC is computed using the authenticator hash, using the Finished MAC Key as
+Certificate, and CertificateVerify.  The HMAC is computed using the authenticator hash, using the Finished MAC Key as
 a key.
+
+~~~
+Finished = HMAC(Finished MAC Key, Hash(Handshake Context || authenticator request ||
+     Certificate || CertificateVerify))
+~~~
 
 ### Authenticator Creation
 
@@ -315,16 +333,17 @@ comparison SHOULD be used.
 
 If, given an authenticator request, the endpoint does not have an appropriate
 certificate or does not want to return one, it constructs an authenticated
-refusal called an empty authenticator.  This is an HMAC over the hashed
-authenticator transcript with a Certificate message containing no
-CertificateEntries and the CertificateVerify message omitted:
-
-```
-Hash(Handshake Context || authenticator request || Certificate)
-```
-
+refusal called an empty authenticator.  This is a Finished
+message sent without a Certificate or CertificateVerify. This message is an
+HMAC over the hashed authenticator transcript with a Certificate message
+containing no CertificateEntries and the CertificateVerify message omitted.
 The HMAC is computed using the authenticator hash, using the Finished MAC Key as a key.
 This message does not include any TLS framing.
+
+```
+Finished = HMAC(Finished MAC Key, Hash(Handshake Context || authenticator request ||
+     Certificate))
+```
 
 # API considerations
 
@@ -394,7 +413,7 @@ The "validate" API takes as input:
 It returns the certificate chain and extensions and a status to indicate
 whether the authenticator is valid or not.  If the authenticator was
 empty - that is, it did not contain a certificate - the certificate
-chain will contain no certificates.  The API MUST return a failure
+chain will contain no certificates.  The API SHOULD return a failure
 if the certificate_request_context of the authenticator was used in a
 previously validated authenticator.  Well-formed empty authenticators
 are returned as valid.
