@@ -33,9 +33,9 @@ informative:
 
 --- abstract
 
-This document describes a mechanism in Transport Layer Security (TLS) to
+This document describes a mechanism in Transport Layer Security (TLS) for peers to
 provide a proof of ownership of a certificate.  This proof can be exported
-by one peer, transmitted out-of-band to the other peer verified.
+by one peer, transmitted out-of-band to the other peer, and verified by the receiving peer.
 
 --- middle
 
