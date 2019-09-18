@@ -340,10 +340,10 @@ containing no CertificateEntries and the CertificateVerify message omitted.
 The HMAC is computed using the authenticator hash, using the Finished MAC Key as a key.
 This message does not include any TLS framing.
 
-```
+~~~
 Finished = HMAC(Finished MAC Key, Hash(Handshake Context || authenticator request ||
      Certificate))
-```
+~~~
 
 # API considerations
 
