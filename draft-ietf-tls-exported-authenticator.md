@@ -83,7 +83,9 @@ application protocols.  Mechanisms such as those required to advertise
 support and handle authentication errors are not handled at the TLS layer.
 
 For simplicity, the mechanisms described in this document require a
-TLS version 1.2 or later.
+TLS version 1.2 or later.  It may be possible to adapt this mechanism
+for use with DTLS, but such usage is outside the scope of this
+document.
 
 
 # Conventions and Terminology
