@@ -78,7 +78,7 @@ higher-layer protocol.  For example, multiplexed connection protocols
 like HTTP/2 {{!RFC7540}} do not have a notion of which TLS record
 a given message is a part of. 
 
-Exported Authenticators is meant to be used as a building block for
+Exported Authenticators are meant to be used as a building block for
 application protocols.  Mechanisms such as those required to advertise
 support and handle authentication errors are not handled at the TLS layer.
 
