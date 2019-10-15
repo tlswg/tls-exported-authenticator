@@ -82,11 +82,8 @@ Exported Authenticators are meant to be used as a building block for
 application protocols.  Mechanisms such as those required to advertise
 support and handle authentication errors are not handled at the TLS layer.
 
-For simplicity, the mechanisms described in this document require a
-TLS version 1.2 or later.  It may be possible to adapt this mechanism
-for use with DTLS, but such usage is outside the scope of this
-document.
-
+For simplicity, the mechanisms described in this document require
+TLS (or DTLS) version 1.2 or later.
 
 # Conventions and Terminology
 
