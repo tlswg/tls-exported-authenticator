@@ -42,10 +42,10 @@ transmitted out of band and verified by the peer.
 # Introduction
 
 This document provides a way to authenticate one party of a Transport Layer
-Security (TLS) communication to its peer using a certificate after the session
+Security (TLS) connection to its peer using a certificate after the session
 has been established.  This allows both the client and server to prove ownership
 of additional identities at any time after the handshake has completed.  This
-proof of authentication can be exported and transmitted out of band from one
+proof of authentication can be exported and transmitted out-of-band from one
 party to be validated by its peer.
 
 This mechanism provides two advantages over the authentication that TLS natively
@@ -78,9 +78,12 @@ higher-layer protocol.  For example, multiplexed connection protocols
 like HTTP/2 {{!RFC7540}} do not have a notion of which TLS record
 a given message is a part of. 
 
-For simplicity, the mechanisms described in this document require a
-TLS version 1.2 or later.
+Exported Authenticators are meant to be used as a building block for
+application protocols.  Mechanisms such as those required to advertise
+support and handle authentication errors are not handled at the TLS layer.
 
+For simplicity, the mechanisms described in this document require
+TLS (or DTLS) version 1.2 or later.
 
 # Conventions and Terminology
 
@@ -95,9 +98,9 @@ capitals, as shown here.
 The authenticator request is a structured message that can be created by either
 party of a TLS connection using data exported from that connection.  It can
 be transmitted to the other party of the TLS connection at the application
-layer.  The application layer protocol
-used to send the authenticator SHOULD use TLS as its underlying transport to
-keep the request confidential.
+layer.  The application layer protocol used to send the authenticator request
+SHOULD use TLS as its underlying transport to keep the request confidential.  The
+application MAY use the existing TLS connection to transport the authenticator.
 
 An authenticator request message can be constructed by either the client or the
 server.  This authenticator request uses the CertificateRequest message structure
@@ -140,7 +143,7 @@ The authenticator is a structured message that can be exported from either
 party of a TLS connection.  It can be transmitted to the other party of
 the TLS connection at the application layer.  The application layer protocol
 used to send the authenticator SHOULD use TLS as its underlying transport
-to keep the certificate confidential.
+to keep the certificate confidential.  The application MAY use the existing TLS connection to transport the authenticator. 
 
 An authenticator message can be constructed by either the client or the
 server given an established TLS connection, a certificate, and a corresponding
@@ -153,7 +156,7 @@ the server.
 ## Authenticator Keys
 
 Each authenticator is computed using a Handshake Context and Finished MAC Key
-derived from the TLS session.  These values are derived using an exporter as
+derived from the TLS connection.  These values are derived using an exporter as
 described in {{!RFC5705}} (for TLS 1.2) or {{!TLS13}} (for
 TLS 1.3).  These values use different labels depending on the role of the
 sender:
