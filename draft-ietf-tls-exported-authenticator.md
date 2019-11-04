@@ -316,8 +316,8 @@ Certificate, and CertificateVerify.  The HMAC is computed using the authenticato
 a key.
 
 ~~~
-Finished = HMAC(Finished MAC Key, Hash(Handshake Context || authenticator request ||
-     Certificate || CertificateVerify))
+Finished = HMAC(Finished MAC Key, Hash(Handshake Context ||
+     authenticator request || Certificate || CertificateVerify))
 ~~~
 
 ### Authenticator Creation
@@ -344,8 +344,8 @@ The HMAC is computed using the authenticator hash, using the Finished MAC Key as
 This message does not include any TLS framing.
 
 ~~~
-Finished = HMAC(Finished MAC Key, Hash(Handshake Context || authenticator request ||
-     Certificate))
+Finished = HMAC(Finished MAC Key, Hash(Handshake Context ||
+     authenticator request || Certificate))
 ~~~
 
 # API considerations
