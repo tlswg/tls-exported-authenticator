@@ -178,7 +178,8 @@ the server.
 Each authenticator is computed using a Handshake Context and Finished MAC Key
 derived from the TLS connection.  These values are derived using an exporter as
 described in {{!RFC5705}} (for TLS 1.2) or Sec. 7.5 of {{!TLS13}} (for
-TLS 1.3).  These values use different labels depending on the role of the
+TLS 1.3).  For TLS 1.3, the exporter_master_secret MUST be used, not the
+early_exporter_master_secret.  These values use different labels depending on the role of the
 sender:
 
 * The Handshake Context is an exporter value that is derived using the label
