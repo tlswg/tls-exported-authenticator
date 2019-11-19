@@ -152,10 +152,11 @@ an attacker who has temporary access to the peer's private key
 from pre-computing valid authenticators.
 
 extensions:
-: The extensions that are allowed in this structure include the extensions
-defined for CertificateRequest messages defined in Section 4.2. of {{!TLS13}}
-and the server_name {{!RFC6066}} extension, which is allowed for
-client-generated authenticator requests.
+: In the case of server-generated authenticator requests, the set of extensions
+allowed in this structure are those defined in the TLS ExtensionType
+Values IANA registry containing CR in the TLS 1.3 column.  For client-generated
+authenticator requests, the set of extensions allowed are those containing CH
+in the TLS 1.3 column.
 
 # Authenticator
 
