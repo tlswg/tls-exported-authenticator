@@ -163,7 +163,8 @@ in the TLS 1.3 column.
 The authenticator is a structured message that can be exported from either
 party of a TLS connection.  It can be transmitted to the other party of
 the TLS connection at the application layer.  The application layer protocol
-used to send the authenticator SHOULD use TLS or QUIC as its underlying transport
+used to send the authenticator SHOULD use TLS or a protocol with comparable
+security properties as its underlying transport
 to keep the certificate confidential.  The application MAY use the existing TLS connection to transport the authenticator. 
 
 An authenticator message can be constructed by either the client or the
