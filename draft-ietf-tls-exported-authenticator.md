@@ -124,17 +124,22 @@ SHOULD use TLS as its underlying transport to keep the request confidential.  Th
 application MAY use the existing TLS connection to transport the authenticator.
 
 An authenticator request message can be constructed by either the client or the
-server.  This authenticator request uses the CertificateRequest message structure
-from Section 4.3.2 of {{!TLS13=RFC8446}}, even if the TLS connection protocol
-is TLS 1.2.  The CertificateRequest is used to define the parameters in a request for an
-authenticator.  This message does not include any TLS framing and is not encrypted
-with a handshake key.
+server.  Server-generated authenticator requests use the CertificateRequest
+message from Section 4.3.2 of {{!TLS13=RFC8446}}. Client-generated
+authenticator requests use a new message, called the ClientCertificateRequest,
+which uses the same structure as CertificateRequest.  These messages
+structures are used even if the TLS connection protocol is TLS 1.2.
 
-The uniqueness requirements of the certificate_request_context apply
-only to CertificateRequest messages that are used as part of authenticator requests.
-There is no impact if the value of a certificate_request_context used in an authenticator
-request matches the value of a certificate_request_context in the handshake or
-in a post-handshake message.  The structure is defined to be:
+The CertificateRequest and ClientCertificateRequest messages are used to define the
+parameters in a request for an authenticator.  These messages do not include any
+TLS framing and are not encrypted with a handshake key.
+
+The structures are defined to be:
+
+       struct {
+          opaque certificate_request_context<0..2^8-1>;
+          Extension extensions<2..2^16-1>;
+       } ClientCertificateRequest;
 
        struct {
           opaque certificate_request_context<0..2^8-1>;
@@ -152,17 +157,26 @@ an attacker who has temporary access to the peer's private key
 from pre-computing valid authenticators.
 
 extensions:
-: The extensions that are allowed in this structure include the extensions
-defined for CertificateRequest messages defined in Section 4.2. of {{!TLS13}}
-and the server_name {{!RFC6066}} extension, which is allowed for
-client-generated authenticator requests.
+: The set of extensions allowed in the CertificateRequest structure are those
+defined in the TLS ExtensionType Values IANA registry containing CR in the
+TLS 1.3 column.  The extensions allowed in the ClientCertificateRequest
+are those containing CR in the TLS 1.3 column, along with the
+server_name {{!RFC6066}} extension.
+
+The uniqueness requirements of the certificate_request_context apply
+only to CertificateRequest and ClientCertificateRequest messages that are
+used as part of authenticator requests.  There is no impact if the value
+of a certificate_request_context used in an authenticator
+request matches the value of a certificate_request_context in the handshake or
+in a post-handshake message.
 
 # Authenticator
 
 The authenticator is a structured message that can be exported from either
 party of a TLS connection.  It can be transmitted to the other party of
 the TLS connection at the application layer.  The application layer protocol
-used to send the authenticator SHOULD use TLS as its underlying transport
+used to send the authenticator SHOULD use TLS or a protocol with comparable
+security properties as its underlying transport
 to keep the certificate confidential.  The application MAY use the existing TLS connection to transport the authenticator. 
 
 An authenticator message can be constructed by either the client or the
@@ -363,7 +377,8 @@ Notwithstanding the success conditions described below, all APIs MUST fail if:
 * the connection is TLS 1.2 and the extended master secret extension {{!RFC7627}} was not
   negotiated
 
-The following sections describes APIs that are considered necessary to implement exported authenticators.  These are informative only.
+The following sections describes APIs that are considered necessary to
+implement exported authenticators.  These are informative only.
 
 ## The "request" API
 
@@ -372,7 +387,8 @@ The "request" API takes as input:
 * certificate_request_context (from 0 to 255 bytes)
 * set of extensions to include (this MUST include signature_algorithms)
 
-It returns an authenticator request, which is a sequence of octets that comprises a CertificateRequest message.
+It returns an authenticator request, which is a sequence of octets
+that comprises a CertificateRequest or ClientCertificateRequest message.
 
 ## The "get context" API
 
