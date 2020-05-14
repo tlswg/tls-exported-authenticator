@@ -131,8 +131,9 @@ which uses the same structure as CertificateRequest.  These messages
 structures are used even if the TLS connection protocol is TLS 1.2.
 
 The CertificateRequest and ClientCertificateRequest messages are used to define the
-parameters in a request for an authenticator.  These messages do not include any
-TLS framing and are not encrypted with a handshake key.
+parameters in a request for an authenticator.  These messages are encoded as 
+Handshake Messages but do not include any TLS record layer framing, and are not
+encrypted with a handshake key.
 
 The structures are defined to be:
 
@@ -215,13 +216,14 @@ used with cipher suites that do not use the TLS PRF and have not defined
 a hash function for this purpose.  This hash is referred to as the authenticator hash.
 
 To avoid key synchronization attacks, Exported Authenticators MUST NOT be generated or
-accepted on TLS 1.2 connectons that did not negotiate
+accepted on TLS 1.2 connections that did not negotiate
 the extended master secret {{!RFC7627}}.
 
 ## Authenticator Construction
 
 An authenticator is formed from the concatenation of TLS 1.3 {{!TLS13}}
-Certificate, CertificateVerify, and Finished messages.
+Certificate, CertificateVerify, and Finished messages. These messages are
+encoded as Handshake Messages, including the length and type fields.
 
 If the peer creating the certificate_request_context has already created or
 correctly validated an authenticator with the same value, then no
@@ -356,7 +358,8 @@ message sent without a Certificate or CertificateVerify. This message is an
 HMAC over the hashed authenticator transcript with a Certificate message
 containing no CertificateEntries and the CertificateVerify message omitted.
 The HMAC is computed using the authenticator hash, using the Finished MAC Key as a key.
-This message does not include any TLS framing.
+This message is encoded as a Handshake Message but does not include any TLS record
+layer framing.
 
 ~~~
 Finished = HMAC(Finished MAC Key, Hash(Handshake Context ||
