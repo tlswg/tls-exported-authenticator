@@ -256,7 +256,7 @@ requirements of a Certificate message in the negotiated version of TLS.  In
 particular, the certificate chain MUST be valid for the a signature algorithms
 indicated by the peer in the "signature_algorithms" and "signature_algorithms_cert"
 extension, as described in Section 4.2.3 of {{!TLS13}} for TLS 1.3 or the "signature_algorithms" extension
-from Sections 7.4.2 and 7.4.6 of {{!RFC5246}} for TLS 1.2.
+from Sections 7.4.2 and 7.4.6 of {{?RFC5246}} for TLS 1.2.
 
 In addition to "signature_algorithms" and "signature_algorithms_cert",
 the "server_name" {{!RFC6066}}, "certificate_authorities"
@@ -327,7 +327,7 @@ using a value derived from the connection secrets before taking a user-visible a
 
 ### Finished
 
-A HMAC {{!HMAC=RFC2104}} over the hashed authenticator transcript, which is the
+An HMAC {{?HMAC=RFC2104}} over the hashed authenticator transcript, which is the
 concatenated Handshake Context, authenticator request (if present),
 Certificate, and CertificateVerify.  The HMAC is computed using the authenticator hash, using the Finished MAC Key as
 a key.
