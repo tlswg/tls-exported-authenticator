@@ -34,7 +34,7 @@ informative:
 --- abstract
 
 This document describes a mechanism in Transport Layer Security (TLS) for peers to
-provide a proof of ownership of an identity, such as an X509 certificate.  This proof can
+provide a proof of ownership of an identity, such as an X.509 certificate.  This proof can
 be exported by one peer, transmitted out-of-band to the other peer, and verified by the
 receiving peer.
 
@@ -181,7 +181,7 @@ security properties as its underlying transport to keep the Certificate confiden
 The application MAY use the existing TLS connection to transport the authenticator.
 
 An authenticator message can be constructed by either the client or the
-server given an established TLS connection, an identity, such as an X509 certificate,
+server given an established TLS connection, an identity, such as an X.509 certificate,
 and a corresponding private key.  Clients MUST NOT send an authenticator
 without a preceding authenticator request; for servers an
 authenticator request is optional.  For authenticators that do not correspond
@@ -264,7 +264,7 @@ the "server_name" {{!RFC6066}}, "certificate_authorities"
 (Section 4.2.5. of {{!TLS13}}) extensions are used to guide certificate
 selection.
 
-Only the X509 certificate type defined in {{!TLS13}} is supported.
+Only the X.509 certificate type defined in {{!TLS13}} is supported.
 Alternative certificate formats such as {{!RFC7250}} Raw Public Keys are
 not supported in this version of the specification and their use in this context
 has not yet been analysed.
@@ -314,8 +314,7 @@ Hash(Handshake Context || authenticator request || Certificate)
 ~~~
 
 Where Hash is the authenticator hash defined in section 4.1.  If the authenticator request
-is not present, it is omitted from this construction, i.e., it is zero
-length.
+is not present, it is omitted from this construction, i.e., it is zero-length.
 
 If the party that generates the exported authenticator does so with a different
 connection than the party that is validating it, then the Handshake Context will
