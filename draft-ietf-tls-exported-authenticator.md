@@ -34,15 +34,16 @@ informative:
 --- abstract
 
 This document describes a mechanism in Transport Layer Security (TLS) for peers to
-provide a proof of ownership of a certificate.  This proof can be exported
-by one peer, transmitted out-of-band to the other peer, and verified by the receiving peer.
+provide a proof of ownership of an identity, such as an X509 certificate.  This proof can
+be exported by one peer, transmitted out-of-band to the other peer, and verified by the
+receiving peer.
 
 --- middle
 
 # Introduction
 
 This document provides a way to authenticate one party of a Transport Layer
-Security (TLS) connection to its peer using a certificate after the session
+Security (TLS) connection to its peer using a Certificate message after the session
 has been established.  This allows both the client and server to prove ownership
 of additional identities at any time after the handshake has completed.  This
 proof of authentication can be exported and transmitted out-of-band from one
@@ -176,12 +177,12 @@ The authenticator is a structured message that can be exported from either
 party of a TLS connection.  It can be transmitted to the other party of
 the TLS connection at the application layer.  The application layer protocol
 used to send the authenticator SHOULD use TLS or a protocol with comparable
-security properties as its underlying transport
-to keep the certificate confidential.  The application MAY use the existing TLS connection to transport the authenticator. 
+security properties as its underlying transport to keep the Certificate confidential.
+The application MAY use the existing TLS connection to transport the authenticator.
 
 An authenticator message can be constructed by either the client or the
-server given an established TLS connection, a certificate, and a corresponding
-private key.  Clients MUST NOT send an authenticator
+server given an established TLS connection, an identity, such as an X509 certificate,
+and a corresponding private key.  Clients MUST NOT send an authenticator
 without a preceding authenticator request; for servers an
 authenticator request is optional.  For authenticators that do not correspond
 to authenticator requests, the certificate_request_context is chosen by
@@ -239,17 +240,17 @@ will be able to process such extensions.
 
 ### Certificate
 
-The Certificate message contains the certificate to be used for authentication and any
-supporting certificates in the chain. This structure is defined in {{!TLS13}},
-Section 4.4.2.
+The Certificate message contains the identity to be used for authentication, such as the
+end-entity certificate and any supporting certificates in the chain. This structure is
+defined in {{!TLS13}}, Section 4.4.2.
 
-The certificate message contains an opaque string called
+The Certificate message contains an opaque string called
 certificate_request_context, which is extracted from the authenticator request if
 present.  If no authenticator request is provided, the certificate_request_context
 can be chosen arbitrarily but MUST be unique within the scope of the connection
 and be unpredictable to the peer.
 
-The certificates chosen in the Certificate message MUST conform to the
+Certificates chosen in the Certificate message MUST conform to the
 requirements of a Certificate message in the negotiated version of TLS.  In
 particular, the certificate chain MUST be valid for the a signature algorithms
 indicated by the peer in the "signature_algorithms" and "signature_algorithms_cert"
@@ -275,7 +276,7 @@ Unrecognized extensions in the authenticator request MUST be ignored.
 ### CertificateVerify
 
 This message is used to provide explicit proof that an endpoint possesses the
-private key corresponding to its certificate.  The definition for TLS 1.3 is:
+private key corresponding to its identity.  The definition for TLS 1.3 is:
 
        struct {
           SignatureScheme algorithm;
@@ -312,8 +313,8 @@ Hash(Handshake Context || authenticator request || Certificate)
 ~~~
 
 Where Hash is the authenticator hash defined in section 4.1.  If the authenticator request
-is not present, it is omitted from this construction (that is, it is zero
-length).
+is not present, it is omitted from this construction, i.e., it is zero
+length.
 
 If the party that generates the exported authenticator does so with a different
 connection than the party that is validating it, then the Handshake Context will
@@ -350,7 +351,7 @@ comparison SHOULD be used.
 # Empty Authenticator
 
 If, given an authenticator request, the endpoint does not have an appropriate
-certificate or does not want to return one, it constructs an authenticated
+identity or does not want to return one, it constructs an authenticated
 refusal called an empty authenticator.  This is a Finished
 message sent without a Certificate or CertificateVerify. This message is an
 HMAC over the hashed authenticator transcript with a Certificate message
@@ -403,9 +404,9 @@ It returns the certificate_request_context.
 The "authenticate" API takes as input:
 
 * a reference to an active connection
-* a set of certificate chains and associated extensions
+* an identity, such as a set of certificate chains and associated extensions
 (OCSP, SCT, etc.)
-* a signer (either the private key associated with the certificate, or interface
+* a signer (either the private key associated with the identity, or interface
 to perform private key operations) for each chain
 * an authenticator request or certificate_request_context (from 0 to 255 bytes)
 
@@ -430,13 +431,11 @@ The "validate" API takes as input:
 * an optional authenticator request
 * an authenticator
 
-It returns the certificate chain and extensions and a status to indicate
-whether the authenticator is valid or not.  If the authenticator was
-empty - that is, it did not contain a certificate - the certificate
-chain will contain no certificates.  The API SHOULD return a failure
-if the certificate_request_context of the authenticator was used in a
-previously validated authenticator.  Well-formed empty authenticators
-are returned as valid.
+It returns the identity, such as the certificate chain and its extensions,
+and a status to indicate whether the authenticator is valid or not.
+The API SHOULD return a failure if the certificate_request_context of the
+authenticator was used in a previously validated authenticator.
+Well-formed empty authenticators are returned as valid.
 
 # IANA Considerations
 
@@ -464,9 +463,8 @@ inside TLS when an authenticator is either created or validated.  The applicatio
 possession of a validated authenticator can rely on any semantics associated with data
 in the certificate_request_context.
 
-* This property makes it difficult to formally prove
-that a server is jointly authoritative over multiple certificates, rather than
-individually authoritative over each.
+* This property makes it difficult to formally prove that a server is jointly authoritative
+over multiple identities, rather than individually authoritative over each.
 * There is no indication in the TLS layer about which point in time an authenticator was
 computed.  Any feedback about the time of creation or validation of the authenticator
 should be tracked as part of the application layer semantics if required.
