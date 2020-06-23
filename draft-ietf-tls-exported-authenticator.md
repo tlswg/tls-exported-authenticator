@@ -158,11 +158,13 @@ an attacker who has temporary access to the peer's private key
 from pre-computing valid authenticators.
 
 extensions:
-: The set of extensions allowed in the CertificateRequest structure are those
-defined in the TLS ExtensionType Values IANA registry containing CR in the
-TLS 1.3 column.  The extensions allowed in the ClientCertificateRequest
-are those containing CR in the TLS 1.3 column, along with the
-server_name {{!RFC6066}} extension.
+: The set of extensions allowed in the CertificateRequest
+structure and the ClientCertificateRequest structure are those
+defined in the TLS ExtensionType Values IANA registry {{!RFC8447}}
+containing CR in the TLS 1.3 column.  In addition, the set of
+extensions in the ClientCertificateRequest structure MAY
+include the server_name {{!RFC6066}} extension.
+
 
 The uniqueness requirements of the certificate_request_context apply
 only to CertificateRequest and ClientCertificateRequest messages that are
