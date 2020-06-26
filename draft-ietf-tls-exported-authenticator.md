@@ -434,8 +434,8 @@ The "validate" API takes as input:
 
 It returns the identity, such as the certificate chain and its extensions,
 and a status to indicate whether the authenticator is valid or not after
-applying the function for validating the certificate chain contained in
-the authenticator.
+applying the function for validating the certificate chain to the chain
+contained in the authenticator.
 
 The API SHOULD return a failure if the certificate_request_context of the
 authenticator was used in a previously validated authenticator.
