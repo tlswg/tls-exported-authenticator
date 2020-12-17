@@ -70,7 +70,7 @@ post-handshake authentication functionality provided by renegotiation.
 Unlike renegotiation, exported Authenticator-based post-handshake
 authentication does not require any changes at the TLS layer.
 
-Post-handshake authentication is defined in TLS 1.3, but it has the
+Post-handshake authentication is defined in section 4.6.3 of TLS 1.3 {{!TLS13}}, but it has the
 disadvantage of requiring additional state to be stored as part of the TLS
 state machine.  Furthermore, the authentication boundaries of TLS
 1.3 post-handshake authentication align with TLS record boundaries,
@@ -83,7 +83,7 @@ Exported Authenticators are meant to be used as a building block for
 application protocols.  Mechanisms such as those required to advertise
 support and handle authentication errors are not handled at the TLS layer.
 
-TLS (or DTLS) version 1.2 or later are REQUIRED to implement the
+TLS (or DTLS) version 1.2 {{!RFC5246}} {{!RFC6347}}. or later are REQUIRED to implement the
 mechanisms described in this document.
 
 # Conventions and Terminology
@@ -121,7 +121,8 @@ The authenticator request is a structured message that can be created by either
 party of a TLS connection using data exported from that connection.  It can
 be transmitted to the other party of the TLS connection at the application
 layer.  The application layer protocol used to send the authenticator request
-SHOULD use TLS as its underlying transport to keep the request confidential.  The
+SHOULD use TLS or a protocol with comparable security properties as its as its
+underlying transport to keep the request confidential.  The
 application MAY use the existing TLS connection to transport the authenticator.
 
 An authenticator request message can be constructed by either the client or the
@@ -194,7 +195,7 @@ the server.
 
 Each authenticator is computed using a Handshake Context and Finished MAC Key
 derived from the TLS connection.  These values are derived using an exporter as
-described in {{!RFC5705}} (for TLS 1.2) or Sec. 7.5 of {{!TLS13}} (for
+described in Section 4 of {{!RFC5705}} (for TLS 1.2) or Section 7.5 of {{!TLS13}} (for
 TLS 1.3).  For TLS 1.3, the exporter_master_secret MUST be used, not the
 early_exporter_master_secret.  These values use different labels depending on the role of the
 sender:
@@ -279,7 +280,7 @@ Unrecognized extensions in the authenticator request MUST be ignored.
 ### CertificateVerify
 
 This message is used to provide explicit proof that an endpoint possesses the
-private key corresponding to its identity.  The definition for TLS 1.3 is:
+private key corresponding to its identity.  The format of this message is taken from TLS 1.3:
 
        struct {
           SignatureScheme algorithm;
@@ -296,7 +297,7 @@ algorithms that are not supported in TLS 1.3.
 
 If an authenticator request is present, the signature algorithm MUST be chosen
 from one of the signature schemes present in the authenticator request.
-Otherwise, the signature algorithm used should be chosen
+Otherwise, with spontaneous server authentication, the signature algorithm used MUST be chosen
 from the "signature_algorithms" sent by the peer in the ClientHello of the TLS
 handshake.  If there are no available signature algorithms, then no
 authenticator should be constructed.
@@ -413,7 +414,7 @@ to perform private key operations) for each chain
 * an authenticator request or certificate_request_context (from 0 to 255 bytes)
 
 It returns either the exported authenticator or an empty authenticator
-as a sequence of octets.  It is RECOMMENDED that
+as a sequence of octets.  It is recommended that
 the logic for selecting the certificates and extensions to include
 in the exporter is implemented in the TLS library.  Implementing this
 in the TLS library lets the implementer take advantage of existing
@@ -439,9 +440,11 @@ and a status to indicate whether the authenticator is valid or not after
 applying the function for validating the certificate chain to the chain
 contained in the authenticator.
 
-The API SHOULD return a failure if the certificate_request_context of the
+The API should return a failure if the certificate_request_context of the
 authenticator was used in a previously validated authenticator.
 Well-formed empty authenticators are returned as invalid.
+
+When validating an authenticator, a constant-time comparison should be used.
 
 # IANA Considerations
 
@@ -449,14 +452,15 @@ Well-formed empty authenticators are returned as invalid.
 
 IANA is requested to update the entry for server_name(0) in the registry for
 ExtensionType (defined in {{!TLS13}}) by replacing the value in the "TLS 1.3"
-column with the value "CH, EE, CR".
+column with the value "CH, EE, CR" and this document in the "Reference" column.
 
 ## Update of the TLS Exporter Labels Registry
 
 IANA is requested to add the following entries to the registry for Exporter
 Labels (defined in {{!RFC5705}}): "EXPORTER-server authenticator handshake
 context", "EXPORTER-client authenticator finished key" and "EXPORTER-server
-authenticator finished key".
+authenticator finished key" with "DTLS-OK" and "Recommended" set to "Y" and
+this document added to the "Reference" column.
 
 # Security Considerations {#security}
 
