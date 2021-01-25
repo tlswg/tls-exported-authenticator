@@ -19,6 +19,22 @@ author:
     email: nick@cloudflare.com
 
 normative:
+  QUIC-TLS:
+    title: "Using TLS to Secure QUIC"
+    date: {DATE}
+    seriesinfo:
+      Internet-Draft: draft-ietf-quic-tls
+    author:
+      -
+        ins: M. Thomson
+        name: Martin Thomson
+        org: Mozilla
+        role: editor
+      -
+        ins: S. Turner
+        name: Sean Turner
+        org: sn3rd
+        role: editor
 
 informative:
   SIGMAC:
@@ -121,7 +137,7 @@ The authenticator request is a structured message that can be created by either
 party of a TLS connection using data exported from that connection.  It can
 be transmitted to the other party of the TLS connection at the application
 layer.  The application layer protocol used to send the authenticator request
-SHOULD use TLS or a protocol with comparable security properties as its as its
+SHOULD use a secure with equivalent security to TLS, such as QUIC {{QUIC-TLS}}, as its as its
 underlying transport to keep the request confidential.  The
 application MAY use the existing TLS connection to transport the authenticator.
 
@@ -178,9 +194,9 @@ in a post-handshake message.
 
 The authenticator is a structured message that can be exported from either
 party of a TLS connection.  It can be transmitted to the other party of
-the TLS connection at the application layer.  The application layer protocol
-used to send the authenticator SHOULD use TLS or a protocol with comparable
-security properties as its underlying transport to keep the Certificate confidential.
+the TLS connection at the application layer.  The application layer protocol used to send the authenticator
+SHOULD use a secure with equivalent security to TLS, such as QUIC {{QUIC-TLS}}, as its as its
+underlying transport to keep the authenticator confidential.
 The application MAY use the existing TLS connection to transport the authenticator.
 
 An authenticator message can be constructed by either the client or the
