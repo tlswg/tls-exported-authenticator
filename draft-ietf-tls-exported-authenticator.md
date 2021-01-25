@@ -202,12 +202,12 @@ sender:
 
 * The Handshake Context is an exporter value that is derived using the label
   "EXPORTER-client authenticator handshake context" or "EXPORTER-server
-  authenticator handshake context" for authenticators sent by the client and
+  authenticator handshake context" for authenticators sent by the client or
   server respectively.
 
 * The Finished MAC Key is an exporter value derived using the label
   "EXPORTER-client authenticator finished key" or "EXPORTER-server authenticator
-  finished key" for authenticators sent by the client and server respectively.
+  finished key" for authenticators sent by the client or server respectively.
 
 The context_value used for the exporter is empty (zero length) for all four
 values.  There is no need to include additional context
@@ -256,7 +256,7 @@ and be unpredictable to the peer.
 
 Certificates chosen in the Certificate message MUST conform to the
 requirements of a Certificate message in the negotiated version of TLS.  In
-particular, the certificate chain MUST be valid for the a signature algorithms
+particular, the certificate chain MUST be valid for the signature algorithms
 indicated by the peer in the "signature_algorithms" and "signature_algorithms_cert"
 extension, as described in Section 4.2.3 of {{!TLS13}} for TLS 1.3 or the "signature_algorithms" extension
 from Sections 7.4.2 and 7.4.6 of {{!RFC5246}} for TLS 1.2.
