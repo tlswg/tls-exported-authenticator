@@ -88,7 +88,7 @@ post-handshake authentication functionality provided by renegotiation.
 Unlike renegotiation, exported Authenticator-based post-handshake
 authentication does not require any changes at the TLS layer.
 
-Post-handshake authentication is defined in section 4.6.3 of TLS 1.3 {{!TLS13}}, but it has the
+Post-handshake authentication is defined in section 4.6.3 of TLS 1.3 {{!RFC8446}}, but it has the
 disadvantage of requiring additional state to be stored as part of the TLS
 state machine.  Furthermore, the authentication boundaries of TLS
 1.3 post-handshake authentication align with TLS record boundaries,
@@ -111,6 +111,8 @@ The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
 "OPTIONAL" in this document are to be interpreted as described in BCP
 14 {{!RFC2119}} {{!RFC8174}} when, and only when, they appear in all
 capitals, as shown here.
+
+This document uses terminology such as client, server, connection, handshake, endpoint, peer that are defined in section 1.1 of {{RFC8446}}
 
 # Message Sequences
 
@@ -145,7 +147,7 @@ application MAY use the existing (D)TLS connection to transport the authenticato
 
 An authenticator request message can be constructed by either the client or the
 server.  Server-generated authenticator requests use the CertificateRequest
-message from Section 4.3.2 of {{!TLS13=RFC8446}}.  Client-generated
+message from Section 4.3.2 of {{!RFC8446}}.  Client-generated
 authenticator requests use a new message, called the ClientCertificateRequest,
 which uses the same structure as CertificateRequest.  These message
 structures are used even if the underlying connection protocol is TLS 1.2 or DTLS 1.2.
@@ -213,7 +215,7 @@ the server.
 
 Each authenticator is computed using a Handshake Context and Finished MAC Key
 derived from the (D)TLS connection.  These values are derived using an exporter as
-described in Section 4 of {{!RFC5705}} (for (D)TLS 1.2) or Section 7.5 of {{!TLS13}} (for
+described in Section 4 of {{!RFC5705}} (for (D)TLS 1.2) or Section 7.5 of {{!RFC8446}} (for
 (D)TLS 1.3).  For (D)TLS 1.3, the exporter_master_secret MUST be used, not the
 early_exporter_master_secret.  These values use different labels depending on the role of the
 sender:
@@ -242,7 +244,7 @@ the extended master secret {{!RFC7627}}.
 
 ## Authenticator Construction
 
-An authenticator is formed from the concatenation of TLS 1.3 {{!TLS13}}
+An authenticator is formed from the concatenation of TLS 1.3 {{!RFC8446}}
 Certificate, CertificateVerify, and Finished messages. These messages are
 encoded as TLS handshake messages, including length and type fields.
 
@@ -264,7 +266,7 @@ will be able to process such extensions.
 
 The Certificate message contains the identity to be used for authentication, such as the
 end-entity certificate and any supporting certificates in the chain. This structure is
-defined in {{!TLS13}}, Section 4.4.2.
+defined in {{!RFC8446}}, Section 4.4.2.
 
 The Certificate message contains an opaque string called
 certificate_request_context, which is extracted from the authenticator request if
@@ -276,16 +278,16 @@ Certificates chosen in the Certificate message MUST conform to the
 requirements of a Certificate message in the negotiated version of (D)TLS.  In
 particular, the certificate chain MUST be valid for the signature algorithms
 indicated by the peer in the "signature_algorithms" and "signature_algorithms_cert"
-extension, as described in Section 4.2.3 of {{!TLS13}} for (D)TLS 1.3 or the "signature_algorithms" extension
+extension, as described in Section 4.2.3 of {{!RFC8446}} for (D)TLS 1.3 or the "signature_algorithms" extension
 from Sections 7.4.2 and 7.4.6 of {{!RFC5246}} for (D)TLS 1.2.
 
 In addition to "signature_algorithms" and "signature_algorithms_cert",
 the "server_name" {{!RFC6066}}, "certificate_authorities"
-(Section 4.2.4. of {{!TLS13}}), and "oid_filters"
-(Section 4.2.5. of {{!TLS13}}) extensions are used to guide certificate
+(Section 4.2.4. of {{!RFC8446}}), and "oid_filters"
+(Section 4.2.5. of {{!RFC8446}}) extensions are used to guide certificate
 selection.
 
-Only the X.509 certificate type defined in {{!TLS13}} is supported.
+Only the X.509 certificate type defined in {{!RFC8446}} is supported.
 Alternative certificate formats such as {{!RFC7250}} Raw Public Keys are
 not supported in this version of the specification and their use in this context
 has not yet been analysed.
@@ -305,7 +307,7 @@ private key corresponding to its identity.  The format of this message is taken 
           opaque signature<0..2^16-1>;
        } CertificateVerify;
 
-The algorithm field specifies the signature algorithm used (see Section 4.2.3 of {{!TLS13}}
+The algorithm field specifies the signature algorithm used (see Section 4.2.3 of {{!RFC8446}}
 for the definition of this field).  The signature is a digital signature
 using that algorithm.
 
@@ -324,7 +326,7 @@ The signature is computed using the chosen signature scheme over the concatenati
 
 * A string that consists of octet 32 (0x20) repeated 64 times
 * The context string "Exported Authenticator" (which is not NULL-terminated)
-* A single 0 byte which serves as the separator
+* A single 0 octet which serves as the separator
 * The hashed authenticator transcript
 
 The authenticator transcript is the hash of the concatenated Handshake Context,
@@ -406,7 +408,7 @@ implement exported authenticators.  These are informative only.
 
 The "request" API takes as input:
 
-* certificate_request_context (from 0 to 255 bytes)
+* certificate_request_context (from 0 to 255 octets)
 * set of extensions to include (this MUST include signature_algorithms)
 
 It returns an authenticator request, which is a sequence of octets
@@ -429,7 +431,7 @@ The "authenticate" API takes as input:
 (OCSP {{RFC6960}}, SCT {{RFC6962}}, etc.)
 * a signer (either the private key associated with the identity, or interface
 to perform private key operations) for each chain
-* an authenticator request or certificate_request_context (from 0 to 255 bytes)
+* an authenticator request or certificate_request_context (from 0 to 255 octets)
 
 It returns either the exported authenticator or an empty authenticator
 as a sequence of octets.  It is recommended that
@@ -469,7 +471,7 @@ When validating an authenticator, a constant-time comparison should be used.
 ## Update of the TLS ExtensionType Registry
 
 IANA is requested to update the entry for server_name(0) in the registry for
-ExtensionType (defined in {{!TLS13}}) by replacing the value in the "TLS 1.3"
+ExtensionType (defined in {{!RFC8446}}) by replacing the value in the "TLS 1.3"
 column with the value "CH, EE, CR" and this document in the "Reference" column.
 
 ## Update of the TLS Exporter Labels Registry
