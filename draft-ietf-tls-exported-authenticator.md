@@ -139,7 +139,7 @@ The authenticator request is a structured message that can be created by either
 party of a (D)TLS connection using data exported from that connection.  It can
 be transmitted to the other party of the (D)TLS connection at the application
 layer.  The application layer protocol used to send the authenticator request
-SHOULD use a secure transport with equivalent security to TLS, such as QUIC {{QUIC-TLS}}, as its
+SHOULD use a secure transport channel with equivalent security to TLS, such as QUIC {{QUIC-TLS}}, as its
 underlying transport to keep the request confidential.  The
 application MAY use the existing (D)TLS connection to transport the authenticator.
 
@@ -197,7 +197,7 @@ in a post-handshake message.
 The authenticator is a structured message that can be exported from either
 party of a (D)TLS connection.  It can be transmitted to the other party of
 the (D)TLS connection at the application layer.  The application layer protocol used to send the authenticator
-SHOULD use a secure transport with equivalent security to TLS, such as QUIC {{QUIC-TLS}}, as its
+SHOULD use a secure transport channel with equivalent security to TLS, such as QUIC {{QUIC-TLS}}, as its
 underlying transport to keep the authenticator confidential.
 The application MAY use the existing (D)TLS connection to transport the authenticator.
 
@@ -424,9 +424,9 @@ It returns the certificate_request_context.
 
 The "authenticate" API takes as input:
 
-* a reference to an active connection
+* a reference to the underlying connection
 * an identity, such as a set of certificate chains and associated extensions
-(OCSP, SCT, etc.)
+(OCSP {{RFC6960}}, SCT {{RFC6962}}, etc.)
 * a signer (either the private key associated with the identity, or interface
 to perform private key operations) for each chain
 * an authenticator request or certificate_request_context (from 0 to 255 bytes)
@@ -448,7 +448,7 @@ handled independently of the application layer protocol.
 
 The "validate" API takes as input:
 
-* a reference to an active connection
+* a reference to the underlying connection
 * an optional authenticator request
 * an authenticator
 * a function for validating a certificate chain
