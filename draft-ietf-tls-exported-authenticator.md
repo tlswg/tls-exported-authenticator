@@ -101,7 +101,7 @@ Exported Authenticators are meant to be used as a building block for
 application protocols.  Mechanisms such as those required to advertise
 support and handle authentication errors are not handled by TLS (or DTLS).
 
-TLS (or DTLS) version 1.2 {{!RFC5246}} {{!RFC6347}}. or later are REQUIRED to implement the
+TLS (or DTLS) version 1.2 {{!RFC5246}}{{!RFC6347}} or later are REQUIRED to implement the
 mechanisms described in this document.
 
 # Conventions and Terminology
