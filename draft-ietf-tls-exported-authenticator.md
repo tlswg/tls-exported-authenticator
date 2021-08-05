@@ -49,7 +49,8 @@ informative:
 
 --- abstract
 
-This document describes a mechanism in Transport Layer Security (TLS) for peers to
+This document describes a mechanism that builds on Transport Layer Security (TLS) or
+Datagram Transport Layer Security (DTLS) and enables peers to
 provide a proof of ownership of an identity, such as an X.509 certificate.  This proof can
 be exported by one peer, transmitted out-of-band to the other peer, and verified by the
 receiving peer.
@@ -59,14 +60,15 @@ receiving peer.
 # Introduction
 
 This document provides a way to authenticate one party of a Transport Layer
-Security (TLS) connection to its peer using a Certificate message after the session
+Security (TLS) or Datagram Transport Layer Security (DTLS) connection to its peer
+using a Certificate message after the session
 has been established.  This allows both the client and server to prove ownership
 of additional identities at any time after the handshake has completed.  This
 proof of authentication can be exported and transmitted out-of-band from one
 party to be validated by its peer.
 
-This mechanism provides two advantages over the authentication that TLS natively
-provides:
+This mechanism provides two advantages over the authentication that TLS and DTLS natively
+provide:
 
 multiple identities -
 
@@ -97,7 +99,7 @@ a given message is a part of.
 
 Exported Authenticators are meant to be used as a building block for
 application protocols.  Mechanisms such as those required to advertise
-support and handle authentication errors are not handled at the TLS layer.
+support and handle authentication errors are not handled by TLS (or DTLS).
 
 TLS (or DTLS) version 1.2 {{!RFC5246}} {{!RFC6347}}. or later are REQUIRED to implement the
 mechanisms described in this document.
@@ -134,19 +136,19 @@ Spontaneous Server Authentication
 # Authenticator Request
 
 The authenticator request is a structured message that can be created by either
-party of a TLS connection using data exported from that connection.  It can
-be transmitted to the other party of the TLS connection at the application
+party of a (D)TLS connection using data exported from that connection.  It can
+be transmitted to the other party of the (D)TLS connection at the application
 layer.  The application layer protocol used to send the authenticator request
-SHOULD use a secure with equivalent security to TLS, such as QUIC {{QUIC-TLS}}, as its as its
+SHOULD use a secure transport with equivalent security to TLS, such as QUIC {{QUIC-TLS}}, as its as its
 underlying transport to keep the request confidential.  The
-application MAY use the existing TLS connection to transport the authenticator.
+application MAY use the existing (D)TLS connection to transport the authenticator.
 
 An authenticator request message can be constructed by either the client or the
 server.  Server-generated authenticator requests use the CertificateRequest
-message from Section 4.3.2 of {{!TLS13=RFC8446}}. Client-generated
+message from Section 4.3.2 of {{!TLS13=RFC8446}}.  Client-generated
 authenticator requests use a new message, called the ClientCertificateRequest,
-which uses the same structure as CertificateRequest.  These messages
-structures are used even if the TLS connection protocol is TLS 1.2.
+which uses the same structure as CertificateRequest.  These message
+structures are used even if the underlying connection protocol is TLS 1.2 or DTLS 1.2.
 
 The CertificateRequest and ClientCertificateRequest messages are used to define the
 parameters in a request for an authenticator.  These are encoded as TLS handshake messages, including 
@@ -193,14 +195,14 @@ in a post-handshake message.
 # Authenticator
 
 The authenticator is a structured message that can be exported from either
-party of a TLS connection.  It can be transmitted to the other party of
-the TLS connection at the application layer.  The application layer protocol used to send the authenticator
-SHOULD use a secure with equivalent security to TLS, such as QUIC {{QUIC-TLS}}, as its as its
+party of a (D)TLS connection.  It can be transmitted to the other party of
+the (D)TLS connection at the application layer.  The application layer protocol used to send the authenticator
+SHOULD use a secure transport with equivalent security to TLS, such as QUIC {{QUIC-TLS}}, as its as its
 underlying transport to keep the authenticator confidential.
-The application MAY use the existing TLS connection to transport the authenticator.
+The application MAY use the existing (D)TLS connection to transport the authenticator.
 
 An authenticator message can be constructed by either the client or the
-server given an established TLS connection, an identity, such as an X.509 certificate,
+server given an established (D)TLS connection, an identity, such as an X.509 certificate,
 and a corresponding private key.  Clients MUST NOT send an authenticator
 without a preceding authenticator request; for servers an
 authenticator request is optional.  For authenticators that do not correspond
@@ -210,9 +212,9 @@ the server.
 ## Authenticator Keys
 
 Each authenticator is computed using a Handshake Context and Finished MAC Key
-derived from the TLS connection.  These values are derived using an exporter as
-described in Section 4 of {{!RFC5705}} (for TLS 1.2) or Section 7.5 of {{!TLS13}} (for
-TLS 1.3).  For TLS 1.3, the exporter_master_secret MUST be used, not the
+derived from the (D)TLS connection.  These values are derived using an exporter as
+described in Section 4 of {{!RFC5705}} (for (D)TLS 1.2) or Section 7.5 of {{!TLS13}} (for
+(D)TLS 1.3).  For (D)TLS 1.3, the exporter_master_secret MUST be used, not the
 early_exporter_master_secret.  These values use different labels depending on the role of the
 sender:
 
@@ -230,12 +232,12 @@ values.  There is no need to include additional context
 information at this stage since the application-supplied context
 is included in the authenticator itself.  The length of the exported
 value is equal to the length of the output of the hash function selected
-in TLS for the pseudorandom function (PRF).  Exported authenticators cannot be
-used with cipher suites that do not use the TLS PRF and have not defined
+in (D)TLS for the pseudorandom function (PRF).  Exported authenticators cannot be
+used with cipher suites that do not define the TLS PRF and have not defined
 a hash function for this purpose.  This hash is referred to as the authenticator hash.
 
 To avoid key synchronization attacks, Exported Authenticators MUST NOT be generated or
-accepted on TLS 1.2 connections that did not negotiate
+accepted on (D)TLS 1.2 connections that did not negotiate
 the extended master secret {{!RFC7627}}.
 
 ## Authenticator Construction
@@ -247,12 +249,12 @@ encoded as TLS handshake messages, including length and type fields.
 If the peer creating the certificate_request_context has already created or
 correctly validated an authenticator with the same value, then no
 authenticator should be constructed.  If there is no authenticator request,
-the extensions are chosen from those presented in the TLS handshake's ClientHello.
+the extensions are chosen from those presented in the (D)TLS handshake's ClientHello.
 Only servers can provide an authenticator without a corresponding request.
 
 ClientHello extensions are used to determine permissible extensions
 in the Certificate message.  This follows the general model for
-extensions in TLS in which extensions can only be included
+extensions in (D)TLS in which extensions can only be included
 as part of a Certificate message if they were previously sent as
 part of a CertificateRequest message or ClientHello message, to ensure that the recipient
 will be able to process such extensions.
@@ -271,11 +273,11 @@ can be chosen arbitrarily but MUST be unique within the scope of the connection
 and be unpredictable to the peer.
 
 Certificates chosen in the Certificate message MUST conform to the
-requirements of a Certificate message in the negotiated version of TLS.  In
+requirements of a Certificate message in the negotiated version of (D)TLS.  In
 particular, the certificate chain MUST be valid for the signature algorithms
 indicated by the peer in the "signature_algorithms" and "signature_algorithms_cert"
-extension, as described in Section 4.2.3 of {{!TLS13}} for TLS 1.3 or the "signature_algorithms" extension
-from Sections 7.4.2 and 7.4.6 of {{!RFC5246}} for TLS 1.2.
+extension, as described in Section 4.2.3 of {{!TLS13}} for (D)TLS 1.3 or the "signature_algorithms" extension
+from Sections 7.4.2 and 7.4.6 of {{!RFC5246}} for (D)TLS 1.2.
 
 In addition to "signature_algorithms" and "signature_algorithms_cert",
 the "server_name" {{!RFC6066}}, "certificate_authorities"
@@ -290,7 +292,7 @@ has not yet been analysed.
 
 If an authenticator request was provided, the Certificate message MUST contain
 only extensions present in the authenticator request.  Otherwise, the
-Certificate message MUST contain only extensions present in the TLS handshake.
+Certificate message MUST contain only extensions present in the (D)TLS handshake.
 Unrecognized extensions in the authenticator request MUST be ignored.
 
 ### CertificateVerify
@@ -314,7 +316,7 @@ algorithms that are not supported in TLS 1.3.
 If an authenticator request is present, the signature algorithm MUST be chosen
 from one of the signature schemes present in the authenticator request.
 Otherwise, with spontaneous server authentication, the signature algorithm used MUST be chosen
-from the "signature_algorithms" sent by the peer in the ClientHello of the TLS
+from the "signature_algorithms" sent by the peer in the ClientHello of the (D)TLS
 handshake.  If there are no available signature algorithms, then no
 authenticator should be constructed.
 
@@ -386,15 +388,15 @@ Finished = HMAC(Finished MAC Key, Hash(Handshake Context ||
 # API considerations
 
 The creation and validation of both authenticator requests and authenticators
-SHOULD be implemented inside the TLS library even if it is possible to implement
-it at the application layer.  TLS implementations supporting the use of exported
+SHOULD be implemented inside the (D)TLS library even if it is possible to implement
+it at the application layer.  (D)TLS implementations supporting the use of exported
 authenticators SHOULD provide application programming interfaces by which clients
 and servers may request and verify exported authenticator messages.
 
 Notwithstanding the success conditions described below, all APIs MUST fail if:
 
-* the connection uses a TLS version of 1.1 or earlier, or
-* the connection is TLS 1.2 and the extended master secret extension {{!RFC7627}} was not
+* the connection uses a (D)TLS version of 1.1 or earlier, or
+* the connection is (D)TLS 1.2 and the extended master secret extension {{!RFC7627}} was not
   negotiated
 
 The following sections describes APIs that are considered necessary to
@@ -491,7 +493,7 @@ in the certificate_request_context.
 
 * This property makes it difficult to formally prove that a server is jointly authoritative
 over multiple identities, rather than individually authoritative over each.
-* There is no indication in the TLS layer about which point in time an authenticator was
+* There is no indication in the (D)TLS about which point in time an authenticator was
 computed.  Any feedback about the time of creation or validation of the authenticator
 should be tracked as part of the application layer semantics if required.
 
