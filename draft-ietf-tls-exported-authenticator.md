@@ -18,7 +18,7 @@ author:
     organization: Cloudflare Inc.
     email: nick@cloudflare.com
 
-normative:
+informative:
   QUIC-TLS:
     title: "Using TLS to Secure QUIC"
     date: {DATE}
@@ -35,8 +35,6 @@ normative:
         name: Sean Turner
         org: sn3rd
         role: editor
-
-informative:
   SIGMAC:
     title: "A Unilateral-to-Mutual Authentication Compiler for Key Exchange (with Applications to Client Authentication in TLS 1.3)"
     author:
@@ -94,15 +92,15 @@ state machine.  Furthermore, the authentication boundaries of TLS
 1.3 post-handshake authentication align with TLS record boundaries,
 which are often not aligned with the authentication boundaries of the
 higher-layer protocol.  For example, multiplexed connection protocols
-like HTTP/2 {{!RFC7540}} do not have a notion of which TLS record
+like HTTP/2 {{?RFC7540}} do not have a notion of which TLS record
 a given message is a part of. 
 
 Exported Authenticators are meant to be used as a building block for
 application protocols.  Mechanisms such as those required to advertise
 support and handle authentication errors are not handled by TLS (or DTLS).
 
-TLS (or DTLS) version 1.2 {{!RFC5246}}{{!RFC6347}} or later are REQUIRED to implement the
-mechanisms described in this document.
+The minimum version of TLS and DTLS required to implement the mechanisms
+decribed in this document are TLS 1.2 {{!RFC6347}} and DTLS 1.2 {{!RFC5246}}.
 
 # Conventions and Terminology
 
@@ -176,7 +174,9 @@ each authenticator request within the scope of a connection
 certificate_request_context SHOULD be chosen to be unpredictable
 to the peer (e.g., by randomly generating it) in order to prevent
 an attacker who has temporary access to the peer's private key
-from pre-computing valid authenticators.
+from pre-computing valid authenticators.  For example, the application
+may choose this value to correspond to a value used in an existing
+datastructure in the software to simplify the implementation.
 
 extensions:
 : The set of extensions allowed in the CertificateRequest
@@ -276,9 +276,9 @@ and be unpredictable to the peer.
 
 Certificates chosen in the Certificate message MUST conform to the
 requirements of a Certificate message in the negotiated version of (D)TLS.  In
-particular, the certificate chain MUST be valid for the signature algorithms
+particular, the entries of certificate_list MUST be valid for the signature algorithms
 indicated by the peer in the "signature_algorithms" and "signature_algorithms_cert"
-extension, as described in Section 4.2.3 of {{!RFC8446}} for (D)TLS 1.3 or the "signature_algorithms" extension
+extension, as described in Section 4.2.3 of {{!RFC8446}} for (D)TLS 1.3 or
 from Sections 7.4.2 and 7.4.6 of {{!RFC5246}} for (D)TLS 1.2.
 
 In addition to "signature_algorithms" and "signature_algorithms_cert",
@@ -288,7 +288,7 @@ the "server_name" {{!RFC6066}}, "certificate_authorities"
 selection.
 
 Only the X.509 certificate type defined in {{!RFC8446}} is supported.
-Alternative certificate formats such as {{!RFC7250}} Raw Public Keys are
+Alternative certificate formats such as {{?RFC7250}} Raw Public Keys are
 not supported in this version of the specification and their use in this context
 has not yet been analysed.
 
@@ -345,7 +345,8 @@ not match, resulting in a CertificateVerify message that does not validate.
 This includes situations in which the application data is sent via TLS-terminating
 proxy.  Given a failed CertificateVerify validation, it may be helpful for
 the application to confirm that both peers share the same connection
-using a value derived from the connection secrets before taking a user-visible action.
+using a value derived from the connection secrets (such as the Handshake Context)
+before taking a user-visible action.
 
 ### Finished
 
@@ -428,7 +429,7 @@ The "authenticate" API takes as input:
 
 * a reference to the underlying connection
 * an identity, such as a set of certificate chains and associated extensions
-(OCSP {{RFC6960}}, SCT {{RFC6962}}, etc.)
+(OCSP {{?RFC6960}}, SCT {{?RFC6962}}, etc.)
 * a signer (either the private key associated with the identity, or interface
 to perform private key operations) for each chain
 * an authenticator request or certificate_request_context (from 0 to 255 octets)
@@ -455,13 +456,13 @@ The "validate" API takes as input:
 * an authenticator
 * a function for validating a certificate chain
 
-It returns the identity, such as the certificate chain and its extensions,
-and a status to indicate whether the authenticator is valid or not after
+It returns a status to indicate whether the authenticator is valid or not after
 applying the function for validating the certificate chain to the chain
-contained in the authenticator.
+contained in the authenticator.  If validation is successful, it also returns
+the identity, such as the certificate chain and its extensions.
 
 The API should return a failure if the certificate_request_context of the
-authenticator was used in a previously validated authenticator.
+authenticator was used in a different authenticator that was previously validated.
 Well-formed empty authenticators are returned as invalid.
 
 When validating an authenticator, a constant-time comparison should be used.
@@ -478,7 +479,8 @@ column with the value "CH, EE, CR" and this document in the "Reference" column.
 
 IANA is requested to add the following entries to the registry for Exporter
 Labels (defined in {{!RFC5705}}): "EXPORTER-server authenticator handshake
-context", "EXPORTER-client authenticator finished key" and "EXPORTER-server
+context", "EXPORTER-client authenticator handshake context",
+"EXPORTER-client authenticator finished key" and "EXPORTER-server
 authenticator finished key" with "DTLS-OK" and "Recommended" set to "Y" and
 this document added to the "Reference" column.
 
@@ -486,7 +488,8 @@ this document added to the "Reference" column.
 
 The Certificate/Verify/Finished pattern intentionally looks like the
 TLS 1.3 pattern which now has been analyzed several times.  For example,
-{{SIGMAC}} presents a relevant framework for analysis.
+{{SIGMAC}} presents a relevant framework for analysis, and section 10. of {{!RFC8446}}
+contains a conprehensive set of references.
 
 Authenticators are independent and unidirectional.  There is no explicit state change
 inside TLS when an authenticator is either created or validated.  The application in
