@@ -139,7 +139,7 @@ The authenticator request is a structured message that can be created by either
 party of a (D)TLS connection using data exported from that connection.  It can
 be transmitted to the other party of the (D)TLS connection at the application
 layer.  The application layer protocol used to send the authenticator request
-SHOULD use a secure transport with equivalent security to TLS, such as QUIC {{QUIC-TLS}}, as its as its
+SHOULD use a secure transport with equivalent security to TLS, such as QUIC {{QUIC-TLS}}, as its
 underlying transport to keep the request confidential.  The
 application MAY use the existing (D)TLS connection to transport the authenticator.
 
@@ -197,7 +197,7 @@ in a post-handshake message.
 The authenticator is a structured message that can be exported from either
 party of a (D)TLS connection.  It can be transmitted to the other party of
 the (D)TLS connection at the application layer.  The application layer protocol used to send the authenticator
-SHOULD use a secure transport with equivalent security to TLS, such as QUIC {{QUIC-TLS}}, as its as its
+SHOULD use a secure transport with equivalent security to TLS, such as QUIC {{QUIC-TLS}}, as its
 underlying transport to keep the authenticator confidential.
 The application MAY use the existing (D)TLS connection to transport the authenticator.
 
@@ -347,8 +347,8 @@ using a value derived from the connection secrets before taking a user-visible a
 
 ### Finished
 
-A HMAC {{!HMAC=RFC2104}} over the hashed authenticator transcript, which is the
-concatenated Handshake Context, authenticator request (if present),
+An HMAC {{!HMAC=RFC2104}} over the hashed authenticator transcript, which is the
+concatenation of the Handshake Context, authenticator request (if present),
 Certificate, and CertificateVerify.  The HMAC is computed using the authenticator hash, using the Finished MAC Key as
 a key.
 
@@ -399,7 +399,7 @@ Notwithstanding the success conditions described below, all APIs MUST fail if:
 * the connection is (D)TLS 1.2 and the extended master secret extension {{!RFC7627}} was not
   negotiated
 
-The following sections describes APIs that are considered necessary to
+The following sections describe APIs that are considered necessary to
 implement exported authenticators.  These are informative only.
 
 ## The "request" API
