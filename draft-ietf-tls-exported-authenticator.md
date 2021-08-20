@@ -471,7 +471,7 @@ registry, whose contents are initially empty for all existing registry values.
 
 IANA is requested to update the entry for server_name(0) in the registry for
 ExtensionType (defined in {{!TLS13}}) by replacing the value in the "TLS 1.3"
-column with the value "CH, EE, CR" and this document in the "Reference" column,
+column with the value "CH, EE, CR", adding this document in the "Reference" column,
 and adding the following comment: "[This RFC] added CR to the 'TLS 1.3' column
 because the CertificateRequest message structure is reused for Exported Authenticators.
 Outside of Exported Authenticators, server_name MUST NOT appear in CertificateRequest
