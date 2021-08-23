@@ -179,7 +179,7 @@ to the peer (e.g., by randomly generating it) in order to prevent
 an attacker who has temporary access to the peer's private key
 from pre-computing valid authenticators.  For example, the application
 may choose this value to correspond to a value used in an existing
-datastructure in the software to simplify the implementation.
+datastructure in the software to simplify implementation.
 
 extensions:
 : The set of extensions allowed in the CertificateRequest
