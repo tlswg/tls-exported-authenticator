@@ -59,7 +59,7 @@ receiving peer.
 
 This document provides a way to authenticate one party of a Transport Layer
 Security (TLS) or Datagram Transport Layer Security (DTLS) connection to its peer
-using a Certificate message after the session
+using authentication messages created after the session
 has been established.  This allows both the client and server to prove ownership
 of additional identities at any time after the handshake has completed.  This
 proof of authentication can be exported and transmitted out-of-band from one
@@ -167,7 +167,7 @@ The structures are defined to be:
        } CertificateRequest;
 
 certificate_request_context:
-: An opaque string which identifies the certificate request and which will
+: An opaque string which identifies the authenticator request and which will
 be echoed in the authenticator message.  A certificate_request_context value MUST be unique for
 each authenticator request within the scope of a connection
 (preventing replay and context confusion).  The
@@ -477,7 +477,7 @@ column with the value "CH, EE, CR" and this document in the "Reference" column.
 
 The addition of "CR" to this column does not authorize the use of this extension
 in authenticator CertificateRequests or handshake CertificateRequests, only
-ClientCertificateRequest created as part of client-generated certificate requests.
+ClientCertificateRequest created as part of client-generated authenticator requests.
 
 ## Update of the TLS Exporter Labels Registry
 
