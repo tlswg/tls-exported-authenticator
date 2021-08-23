@@ -514,7 +514,7 @@ in the certificate_request_context.
 
 * This property makes it difficult to formally prove that a server is jointly authoritative
 over multiple identities, rather than individually authoritative over each.
-* There is no indication in the (D)TLS about which point in time an authenticator was
+* There is no indication in (D)TLS about which point in time an authenticator was
 computed.  Any feedback about the time of creation or validation of the authenticator
 should be tracked as part of the application layer semantics if required.
 
