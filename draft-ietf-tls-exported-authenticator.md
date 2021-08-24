@@ -511,6 +511,13 @@ The signatures generated with this API cover the context string
 "Exported Authenticator" and therefore cannot be transplanted into other
 protocols.
 
+In TLS 1.3 the client and server are not guaranteed to agree on the client’s
+final flight until the first application message.  Because EAs can be
+negotiated out-of-band it is possible to negotiate EAs without agreeing on the
+entire transcript.  Servers SHOULD send application data before sending an
+CertificateRequest to the client.  If there is no application data to send the
+server MAY send a NewSessionTicket.
+
 # Acknowledgements {#ack}
 
 Comments on this proposal were provided by Martin Thomson.  Suggestions for
