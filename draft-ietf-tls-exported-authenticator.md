@@ -490,9 +490,9 @@ IANA is requested to update the entry for server_name(0) in the registry for
 ExtensionType (defined in {{!RFC8446}}) by replacing the value in the "TLS 1.3"
 column with the value "CH, EE, CR" and adding this document in the "Reference" column.
 
-The addition of "CR" to this column does not authorize the use of this extension
-in authenticator CertificateRequests or handshake CertificateRequests, only
-ClientCertificateRequest created as part of client-generated authenticator requests.
+IANA is also requested to add the following note to the registry:
+
+The addition of the "CR" to the "TLS 1.3" column for the server_name(0) extension only marks the extension as valid in a ClientCertificateRequest created as part of client-generated authenticator requests.
 
 ## Update of the TLS Exporter Labels Registry
 
