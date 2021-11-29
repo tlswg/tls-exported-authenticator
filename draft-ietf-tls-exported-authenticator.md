@@ -511,12 +511,12 @@ The signatures generated with this API cover the context string
 "Exported Authenticator" and therefore cannot be transplanted into other
 protocols.
 
-In TLS 1.3 the client and server are not guaranteed to agree on the client’s
-final flight until the first application message.  Because EAs can be
-negotiated out-of-band it is possible to negotiate EAs without agreeing on the
-entire transcript.  Servers SHOULD send application data before sending a
-CertificateRequest to the client.  If there is no application data to send the
-server MAY send a NewSessionTicket.
+In TLS 1.3 the client can not explicitly learn from the TLS layer whether its
+Finished message was accepted. Because the application traffic keys are not
+dependent on the client's final flight, the client cannot learn whether the
+server ever received it.  To avoid disagreement between the client and server
+on the authentication status of EAs, servers MUST verify the client Finished
+before sending an EA or processing a received EA.
 
 # Acknowledgements {#ack}
 
