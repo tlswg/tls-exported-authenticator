@@ -497,9 +497,9 @@ The addition of the "CR" to the "TLS 1.3" column for the server_name(0) extensio
 ## Update of the TLS Exporter Labels Registry
 
 IANA is requested to add the following entries to the registry for Exporter
-Labels (defined in {{!RFC5705}}): "EXPORTER-server authenticator handshake
-context", "EXPORTER-client authenticator handshake context",
-"EXPORTER-client authenticator finished key" and "EXPORTER-server
+Labels (defined in {{!RFC5705}}): "EXPORTER-client authenticator handshake context",
+"EXPORTER-server authenticator handshake context", "EXPORTER-client authenticator
+handshake context", "EXPORTER-client authenticator finished key" and "EXPORTER-server
 authenticator finished key" with "DTLS-OK" and "Recommended" set to "Y" and
 this document added to the "Reference" column.
 
