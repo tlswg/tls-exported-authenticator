@@ -506,7 +506,7 @@ this document added to the "Reference" column.
 ## Update of the TLS HandshakeType Registry
 
 IANA is requested to add the following entry to the registry for
-HandshakeType (defined in {{!RFC8446}}): "ClientCertificateRequest"
+HandshakeType (defined in {{!RFC8446}}): "client_certificate_request"
 with "DTLS-OK" and "Recommended" set to "Y" and this document added
 to the "Reference" column with the following in the "Note" column:
 "Used in TLS versions prior to 1.3."
