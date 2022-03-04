@@ -513,8 +513,8 @@ protocols.
 
 In TLS 1.3 the client can not explicitly learn from the TLS layer whether its
 Finished message was accepted. Because the application traffic keys are not
-dependent on the client's final flight, the client cannot learn whether the
-server ever received it.  To avoid disagreement between the client and server
+dependent on the client's final flight, receiving messages from the server
+does not prove that the server received the client's Finished. To avoid disagreement between the client and server
 on the authentication status of EAs, servers MUST verify the client Finished
 before sending an EA or processing a received EA.
 
