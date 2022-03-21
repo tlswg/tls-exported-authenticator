@@ -71,7 +71,7 @@ post-handshake authentication functionality provided by renegotiation.
 Unlike renegotiation, exported Authenticator-based post-handshake
 authentication does not require any changes at the TLS layer.
 
-Post-handshake authentication is defined in section 4.6.3 of TLS 1.3 {{!RFC8446}}, but it has the
+Post-handshake authentication is defined in section 4.6.2 of TLS 1.3 {{!RFC8446}}, but it has the
 disadvantage of requiring additional state to be stored as part of the TLS
 state machine.  Furthermore, the authentication boundaries of TLS
 1.3 post-handshake authentication align with TLS record boundaries,
